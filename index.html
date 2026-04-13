@@ -1,194 +1,1023 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Snake & Ladders</title>
-    <style>
-        :root {
-            --bg-color: #121212;
-            --board-size: 95vw;
-            --cell-color: #1e1e1e;
-            --accent: #ff4757;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Snake & Ladder" />
+  <title>Snake & Ladder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0c29;
+      --bg2: #1a1040;
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --accent: #f7c948;
+      --accent2: #ff6b6b;
+      --green: #43e97b;
+      --blue: #4facfe;
+      --purple: #a78bfa;
+      --text: #f0eaff;
+      --muted: rgba(240,234,255,0.5);
+      --snake: #ff6b6b;
+      --ladder: #43e97b;
+      --radius: 16px;
+      --cell: min(calc((100vw - 32px) / 10), 52px);
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        #game-container {
-            width: var(--board-size);
-            max-width: 428px; /* iPhone 13 Pro Max width */
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        #board {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
-            width: var(--board-size);
-            height: var(--board-size);
-            max-width: 428px;
-            max-height: 428px;
-            border: 2px solid #444;
-            position: relative;
-        }
+    /* Animated starfield bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(120,80,255,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(247,201,72,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(67,233,123,0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        .cell {
-            border: 0.5px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            position: relative;
-            background-color: var(--cell-color);
-        }
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 430px;
+      padding: 0 16px;
+      padding-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .cell:nth-child(even) {
-            background-color: #252525;
-        }
+    /* Header */
+    .header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 56px 0 16px;
+    }
 
-        #player {
-            width: 60%;
-            height: 60%;
-            background-color: var(--accent);
-            border-radius: 50%;
-            position: absolute;
-            transition: all 0.3s ease-in-out;
-            z-index: 10;
-            box-shadow: 0 0 10px rgba(255, 71, 87, 0.8);
-        }
+    .logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 26px;
+      background: linear-gradient(135deg, var(--accent), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.5px;
+    }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #222;
-            border-radius: 15px;
-        }
+    .header-btns { display: flex; gap: 8px; }
 
-        button {
-            background: var(--accent);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            active: transform: scale(0.95);
-        }
+    .icon-btn {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .icon-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.12); }
 
-        #status {
-            font-size: 1.2rem;
-            text-align: center;
-        }
+    /* Player bar */
+    .players-bar {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
 
-        /* Snakes and Ladders simple visual markers */
-        .snake { color: #2ed573; font-weight: bold; }
-        .ladder { color: #eccc68; font-weight: bold; }
+    .player-card {
+      flex: 1;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
 
-    </style>
+    .player-card.active {
+      border-color: var(--accent);
+      background: rgba(247,201,72,0.08);
+    }
+
+    .player-card.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .player-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .player-info { flex: 1; min-width: 0; }
+    .player-name { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .player-pos { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .turn-badge {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #1a1040;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .player-card.active .turn-badge { opacity: 1; }
+
+    /* Board */
+    .board-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    canvas#board {
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1.5px rgba(255,255,255,0.08);
+    }
+
+    /* Dice & controls */
+    .controls {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      gap: 12px;
+    }
+
+    .dice-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dice {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff 0%, #e8e0ff 100%);
+      box-shadow: 0 4px 20px rgba(247,201,72,0.3), inset 0 -3px 0 rgba(0,0,0,0.15);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      padding: 8px;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+      user-select: none;
+    }
+    .dice:active { transform: scale(0.93); }
+    .dice.rolling { animation: diceRoll 0.5s ease-out; }
+
+    @keyframes diceRoll {
+      0%   { transform: rotate(0deg) scale(1); }
+      25%  { transform: rotate(-20deg) scale(1.1); }
+      50%  { transform: rotate(15deg) scale(0.95); }
+      75%  { transform: rotate(-8deg) scale(1.05); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    .dot {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: #1a1040;
+      display: none;
+    }
+    .dot.visible { display: block; }
+
+    .dice-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .roll-btn {
+      flex: 1;
+      height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent) 0%, #ff9f43 100%);
+      border: none;
+      color: #1a1040;
+      font-family: 'Fredoka One', cursive;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(247,201,72,0.35), inset 0 -3px 0 rgba(0,0,0,0.15);
+      transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .roll-btn:active { transform: scale(0.96); }
+    .roll-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* Log */
+    .log-wrap {
+      width: 100%;
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .log-title {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .log-list {
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .log-item {
+      padding: 5px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease;
+    }
+    .log-item span { font-weight: 700; }
+    .log-item.snake span.event { color: var(--snake); }
+    .log-item.ladder span.event { color: var(--ladder); }
+    .log-item.win span.event { color: var(--accent); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,12,41,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+
+    .modal {
+      width: 100%;
+      max-width: 360px;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 24px;
+      text-align: center;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s;
+    }
+    .modal-overlay.show .modal { transform: scale(1) translateY(0); }
+
+    .modal-emoji { font-size: 64px; margin-bottom: 12px; display: block; animation: bounce 0.6s ease 0.3s both; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+    .modal h2 { font-family: 'Fredoka One', cursive; font-size: 28px; margin-bottom: 6px; }
+    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-family: 'Fredoka One', cursive;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      margin-bottom: 10px;
+    }
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn.primary { background: linear-gradient(135deg, var(--accent), #ff9f43); color: #1a1040; }
+    .modal-btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+
+    /* Setup modal */
+    .setup-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .setup-row input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .setup-row input:focus { border-color: var(--accent); }
+    .setup-row input::placeholder { color: var(--muted); }
+
+    .avatar-pick {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .avatar-opt {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--card);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+    }
+    .avatar-opt:active { transform: scale(0.92); }
+    .avatar-opt.selected { border-color: var(--accent); background: rgba(247,201,72,0.12); }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-align: left;
+      margin-bottom: 8px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(26,16,64,0.95);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 200;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
 <body>
-
-    <div id="game-container">
-        <div id="status">Roll to start!</div>
-        
-        <div id="board">
-            <div id="player"></div>
-        </div>
-
-        <div class="controls">
-            <div id="dice-result">🎲: -</div>
-            <button onclick="rollDice()">Roll Dice</button>
-        </div>
+<div class="app">
+  <div class="header">
+    <div class="logo">🎲 Snake & Ladder</div>
+    <div class="header-btns">
+      <button class="icon-btn" id="infoBtn" title="Rules">ℹ️</button>
+      <button class="icon-btn" id="restartBtn" title="Restart">🔄</button>
     </div>
+  </div>
 
-    <script>
-        const board = document.getElementById('board');
-        const playerMarker = document.getElementById('player');
-        const statusText = document.getElementById('status');
-        const diceText = document.getElementById('dice-result');
+  <div class="players-bar" id="playersBar"></div>
 
-        let playerPos = 1;
-        const cells = [];
+  <div class="board-wrap">
+    <canvas id="board"></canvas>
+  </div>
 
-        // Define Snakes and Ladders {start: end}
-        const shortcuts = {
-            4: 14, 9: 31, 17: 7, 20: 38, 28: 84, 40: 59, 
-            51: 67, 54: 34, 62: 19, 63: 81, 71: 91, 87: 24, 93: 73, 95: 75, 99: 78
-        };
+  <div class="controls">
+    <div class="dice-wrap">
+      <div class="dice" id="dice">
+        <!-- 9 dot slots, positions: tl, tc, tr, ml, mc, mr, bl, bc, br -->
+        <div class="dot" id="d0"></div><div class="dot" id="d1"></div><div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div><div class="dot" id="d4"></div><div class="dot" id="d5"></div>
+        <div class="dot" id="d6"></div><div class="dot" id="d7"></div><div class="dot" id="d8"></div>
+      </div>
+      <div class="dice-label">Tap to roll</div>
+    </div>
+    <button class="roll-btn" id="rollBtn">🎲 Roll!</button>
+  </div>
 
-        function createBoard() {
-            // Create cells 100 to 1 for Boustrophedon (snake-like) layout
-            for (let i = 100; i >= 1; i--) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.id = `cell-${i}`;
-                cell.innerText = i;
-                
-                if (shortcuts[i]) {
-                    if (shortcuts[i] > i) cell.classList.add('ladder');
-                    else cell.classList.add('snake');
-                }
+  <div class="log-wrap">
+    <div class="log-title">Game Log</div>
+    <div class="log-list" id="logList"></div>
+  </div>
+</div>
 
-                board.appendChild(cell);
-                cells[i] = cell;
-            }
-            updatePlayerUI();
-        }
+<!-- Setup Modal -->
+<div class="modal-overlay show" id="setupModal">
+  <div class="modal">
+    <span class="modal-emoji">🎮</span>
+    <h2>Setup Game</h2>
+    <p>Enter player names and pick your pieces!</p>
 
-        function updatePlayerUI() {
-            const currentCell = document.getElementById(`cell-${playerPos}`);
-            currentCell.appendChild(playerMarker);
-        }
+    <div class="section-label">Player 1</div>
+    <div class="setup-row">
+      <input type="text" id="p1name" placeholder="Player 1" maxlength="12" value="Player 1" />
+    </div>
+    <div class="avatar-pick" id="av1pick"></div>
 
-        function rollDice() {
-            const roll = Math.floor(Math.random() * 6) + 1;
-            diceText.innerText = `🎲: ${roll}`;
-            
-            movePlayer(roll);
-        }
+    <div class="section-label">Player 2</div>
+    <div class="setup-row">
+      <input type="text" id="p2name" placeholder="Player 2" maxlength="12" value="Player 2" />
+    </div>
+    <div class="avatar-pick" id="av2pick"></div>
 
-        function movePlayer(steps) {
-            if (playerPos + steps <= 100) {
-                playerPos += steps;
-            }
+    <button class="modal-btn primary" id="startBtn">🚀 Start Game!</button>
+  </div>
+</div>
 
-            // Check for snakes or ladders
-            if (shortcuts[playerPos]) {
-                const destination = shortcuts[playerPos];
-                const type = destination > playerPos ? "Ladder! 🪜" : "Snake! 🐍";
-                statusText.innerText = type;
-                playerPos = destination;
-            } else {
-                statusText.innerText = `Moved to ${playerPos}`;
-            }
+<!-- Win Modal -->
+<div class="modal-overlay" id="winModal">
+  <div class="modal">
+    <span class="modal-emoji" id="winEmoji">🏆</span>
+    <h2 id="winTitle">Player Wins!</h2>
+    <p id="winSub">Congratulations! Amazing game.</p>
+    <button class="modal-btn primary" id="playAgainBtn">🎮 Play Again</button>
+    <button class="modal-btn secondary" id="newGameBtn">👥 New Players</button>
+  </div>
+</div>
 
-            updatePlayerUI();
+<!-- Info Modal -->
+<div class="modal-overlay" id="infoModal">
+  <div class="modal">
+    <span class="modal-emoji">📜</span>
+    <h2>How to Play</h2>
+    <p style="text-align:left;line-height:1.8;color:var(--text);">
+      🎲 <strong>Roll</strong> the dice on your turn.<br>
+      🪜 <strong>Ladders</strong> take you UP to a higher square.<br>
+      🐍 <strong>Snakes</strong> send you DOWN to a lower square.<br>
+      🏆 <strong>First to reach square 100 wins!</strong><br>
+      ⚠️ You must land <em>exactly</em> on 100 to win.
+    </p>
+    <button class="modal-btn primary" id="closeInfoBtn">Got it!</button>
+  </div>
+</div>
 
-            if (playerPos === 100) {
-                statusText.innerText = "🎉 YOU WIN!";
-                setTimeout(() => { playerPos = 1; updatePlayerUI(); }, 3000);
-            }
-        }
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-        createBoard();
-    </script>
+<script>
+// ─── Data ───────────────────────────────────────────────────
+const SNAKES = {
+  99: 21, 87: 36, 74: 53, 62: 19, 54: 34, 46: 5, 43: 18
+};
+const LADDERS = {
+  4: 25, 9: 31, 20: 42, 28: 84, 51: 67, 63: 81, 71: 91
+};
+
+const AVATARS = ['🔴','🔵','🟢','🟡','🟠','🟣','⚪','⚫'];
+
+// Dice dot patterns (which of the 9 slots are filled for 1-6)
+const DOT_PATTERNS = {
+  1: [4],
+  2: [2,6],
+  3: [2,4,6],
+  4: [0,2,6,8],
+  5: [0,2,4,6,8],
+  6: [0,2,3,5,6,8]
+};
+
+// ─── State ──────────────────────────────────────────────────
+let state = {
+  players: [],
+  currentPlayer: 0,
+  rolling: false,
+  gameOver: false,
+  lastRoll: 1
+};
+
+let setupChoice = { av1: '🔴', av2: '🔵' };
+
+// ─── DOM refs ───────────────────────────────────────────────
+const canvas = document.getElementById('board');
+const ctx = canvas.getContext('2d');
+const playersBar = document.getElementById('playersBar');
+const rollBtn = document.getElementById('rollBtn');
+const diceEl = document.getElementById('dice');
+const logList = document.getElementById('logList');
+const toast = document.getElementById('toast');
+
+// ─── Board drawing ──────────────────────────────────────────
+const COLS = 10;
+const ROWS = 10;
+let CELL = 0;
+let BOARD_SIZE = 0;
+
+function getCellCenter(n) {
+  // n: 1-100
+  const idx = n - 1; // 0-99
+  const row = Math.floor(idx / COLS); // 0=bottom,9=top in game
+  const col = idx % COLS;
+  // Board row 0 = bottom visually, row 9 = top
+  // But visually canvas y=0 is top
+  // Game: row 0 → visual row 9 (bottom of canvas)
+  const visualRow = ROWS - 1 - row;
+  // Snaking: even game-rows go left-to-right, odd go right-to-left
+  const visualCol = (row % 2 === 0) ? col : (COLS - 1 - col);
+  return {
+    x: visualCol * CELL + CELL / 2,
+    y: visualRow * CELL + CELL / 2
+  };
+}
+
+function drawBoard() {
+  const DPR = window.devicePixelRatio || 1;
+  const W = canvas.clientWidth;
+  BOARD_SIZE = W;
+  CELL = W / COLS;
+  canvas.width = W * DPR;
+  canvas.height = W * DPR;
+  ctx.scale(DPR, DPR);
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, W, W);
+  bg.addColorStop(0, '#1e1458');
+  bg.addColorStop(1, '#12103a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, W);
+
+  // Cells
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const x = c * CELL;
+      const y = r * CELL;
+      const gameRow = ROWS - 1 - r;
+      const gameCol = (gameRow % 2 === 0) ? c : (COLS - 1 - c);
+      const num = gameRow * COLS + gameCol + 1;
+
+      const isEven = (r + c) % 2 === 0;
+      ctx.fillStyle = isEven ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)';
+      ctx.fillRect(x, y, CELL, CELL);
+
+      // Highlight snake heads & ladder bottoms
+      if (SNAKES[num]) {
+        ctx.fillStyle = 'rgba(255,107,107,0.18)';
+        ctx.fillRect(x, y, CELL, CELL);
+      }
+      if (LADDERS[num]) {
+        ctx.fillStyle = 'rgba(67,233,123,0.18)';
+        ctx.fillRect(x, y, CELL, CELL);
+      }
+
+      // Cell number
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = `bold ${CELL * 0.22}px Nunito, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(num, x + 3, y + 2);
+    }
+  }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= COLS; i++) {
+    ctx.beginPath(); ctx.moveTo(i * CELL, 0); ctx.lineTo(i * CELL, W); ctx.stroke();
+  }
+  for (let i = 0; i <= ROWS; i++) {
+    ctx.beginPath(); ctx.moveTo(0, i * CELL); ctx.lineTo(W, i * CELL); ctx.stroke();
+  }
+
+  // Draw snakes
+  Object.entries(SNAKES).forEach(([head, tail]) => {
+    drawSnake(+head, +tail);
+  });
+
+  // Draw ladders
+  Object.entries(LADDERS).forEach(([bottom, top]) => {
+    drawLadder(+bottom, +top);
+  });
+
+  // Cell 100 glow
+  const c100 = getCellCenter(100);
+  const grd = ctx.createRadialGradient(c100.x, c100.y, 0, c100.x, c100.y, CELL * 0.8);
+  grd.addColorStop(0, 'rgba(247,201,72,0.35)');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.arc(c100.x, c100.y, CELL * 0.8, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Star at 100
+  ctx.font = `${CELL * 0.55}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('⭐', c100.x, c100.y);
+
+  // Draw players
+  state.players.forEach((p, i) => {
+    if (p.pos > 0) drawPiece(p.pos, p.avatar, i, state.players.length);
+  });
+}
+
+function drawSnake(head, tail) {
+  const hc = getCellCenter(head);
+  const tc = getCellCenter(tail);
+  // Bezier snake body
+  const cp1x = hc.x + (tc.x - hc.x) * 0.3 + 30;
+  const cp1y = hc.y + (tc.y - hc.y) * 0.3 - 20;
+  const cp2x = hc.x + (tc.x - hc.x) * 0.7 - 30;
+  const cp2y = hc.y + (tc.y - hc.y) * 0.7 + 20;
+
+  // Shadow
+  ctx.shadowColor = 'rgba(255,107,107,0.4)';
+  ctx.shadowBlur = 8;
+
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(hc.x, hc.y);
+  ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, tc.x, tc.y);
+  ctx.strokeStyle = '#ff6b6b';
+  ctx.lineWidth = CELL * 0.18;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Lighter stripe
+  ctx.beginPath();
+  ctx.moveTo(hc.x, hc.y);
+  ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, tc.x, tc.y);
+  ctx.strokeStyle = 'rgba(255,200,180,0.4)';
+  ctx.lineWidth = CELL * 0.07;
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Head emoji
+  ctx.font = `${CELL * 0.5}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🐍', hc.x, hc.y);
+}
+
+function drawLadder(bottom, top) {
+  const bc = getCellCenter(bottom);
+  const tc = getCellCenter(top);
+
+  const dx = tc.x - bc.x;
+  const dy = tc.y - bc.y;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const nx = -dy / len * CELL * 0.12;
+  const ny = dx / len * CELL * 0.12;
+
+  ctx.shadowColor = 'rgba(67,233,123,0.4)';
+  ctx.shadowBlur = 6;
+
+  // Two rails
+  [[nx, ny], [-nx, -ny]].forEach(([ox, oy]) => {
+    ctx.beginPath();
+    ctx.moveTo(bc.x + ox, bc.y + oy);
+    ctx.lineTo(tc.x + ox, tc.y + oy);
+    ctx.strokeStyle = '#43e97b';
+    ctx.lineWidth = CELL * 0.08;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  });
+
+  // Rungs
+  const RUNGS = 5;
+  for (let i = 1; i < RUNGS; i++) {
+    const t = i / RUNGS;
+    const mx = bc.x + dx * t;
+    const my = bc.y + dy * t;
+    ctx.beginPath();
+    ctx.moveTo(mx + nx, my + ny);
+    ctx.lineTo(mx - nx, my - ny);
+    ctx.strokeStyle = '#6bffb8';
+    ctx.lineWidth = CELL * 0.06;
+    ctx.stroke();
+  }
+
+  ctx.shadowBlur = 0;
+
+  // Ladder emoji at bottom
+  ctx.font = `${CELL * 0.4}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🪜', bc.x, bc.y);
+}
+
+function drawPiece(pos, avatar, playerIdx, total) {
+  const c = getCellCenter(pos);
+  // Offset multiple players
+  const offsets = [[0,0],[-6,-6],[6,6],[-6,6]];
+  const off = offsets[playerIdx] || [0,0];
+
+  const px = c.x + off[0];
+  const py = c.y + off[1];
+
+  // Glow ring for current player
+  if (playerIdx === state.currentPlayer && !state.gameOver) {
+    ctx.beginPath();
+    ctx.arc(px, py, CELL * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(247,201,72,0.25)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(247,201,72,0.8)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  ctx.font = `${CELL * 0.42}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(avatar, px, py);
+}
+
+// ─── Dice UI ────────────────────────────────────────────────
+function showDice(value) {
+  const pattern = DOT_PATTERNS[value] || [];
+  for (let i = 0; i < 9; i++) {
+    const dot = document.getElementById('d' + i);
+    dot.classList.toggle('visible', pattern.includes(i));
+  }
+}
+
+function animateDice(finalVal) {
+  return new Promise(resolve => {
+    diceEl.classList.add('rolling');
+    let ticks = 0;
+    const interval = setInterval(() => {
+      showDice(Math.ceil(Math.random() * 6));
+      ticks++;
+      if (ticks >= 8) {
+        clearInterval(interval);
+        diceEl.classList.remove('rolling');
+        showDice(finalVal);
+        resolve();
+      }
+    }, 70);
+  });
+}
+
+// ─── Log ────────────────────────────────────────────────────
+function addLog(msg, type = '') {
+  const el = document.createElement('div');
+  el.className = 'log-item ' + type;
+  el.innerHTML = msg;
+  logList.prepend(el);
+}
+
+// ─── Toast ──────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, duration = 1800) {
+  clearTimeout(toastTimer);
+  toast.textContent = msg;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+// ─── Player Bar ─────────────────────────────────────────────
+function renderPlayersBar() {
+  playersBar.innerHTML = '';
+  state.players.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'player-card' + (i === state.currentPlayer && !state.gameOver ? ' active' : '');
+    card.innerHTML = `
+      <div class="player-avatar">${p.avatar}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-pos">Square ${p.pos === 0 ? 'Start' : p.pos}</div>
+      </div>
+      <div class="turn-badge">Your Turn</div>
+    `;
+    playersBar.appendChild(card);
+  });
+}
+
+// ─── Roll logic ─────────────────────────────────────────────
+async function roll() {
+  if (state.rolling || state.gameOver) return;
+  state.rolling = true;
+  rollBtn.disabled = true;
+
+  const roll = Math.ceil(Math.random() * 6);
+  state.lastRoll = roll;
+  await animateDice(roll);
+
+  const p = state.players[state.currentPlayer];
+  const oldPos = p.pos;
+  let newPos = oldPos + roll;
+
+  addLog(`<span style="color:${getPlayerColor(state.currentPlayer)}">${p.avatar} ${p.name}</span> rolled a <span>${roll}</span>!`);
+
+  if (newPos > 100) {
+    showToast(`Need exact number to reach 100! Stay at ${oldPos}.`);
+    addLog(`<span style="color:var(--muted)">Too high! Stays at ${oldPos}.</span>`);
+    endTurn();
+    return;
+  }
+
+  // Move
+  p.pos = newPos;
+  drawBoard();
+  renderPlayersBar();
+
+  await sleep(400);
+
+  // Check snake
+  if (SNAKES[newPos]) {
+    const dest = SNAKES[newPos];
+    showToast(`😱 Snake! ${p.name} slides from ${newPos} → ${dest}`);
+    addLog(`<span class="event">🐍 Snake! ${p.name} bites from ${newPos} to ${dest}</span>`, 'snake');
+    await sleep(600);
+    p.pos = dest;
+    drawBoard();
+    renderPlayersBar();
+  }
+  // Check ladder
+  else if (LADDERS[newPos]) {
+    const dest = LADDERS[newPos];
+    showToast(`🪜 Ladder! ${p.name} climbs from ${newPos} → ${dest}`);
+    addLog(`<span class="event">🪜 Ladder! ${p.name} climbs from ${newPos} to ${dest}</span>`, 'ladder');
+    await sleep(600);
+    p.pos = dest;
+    drawBoard();
+    renderPlayersBar();
+  }
+
+  await sleep(200);
+
+  // Win check
+  if (p.pos === 100) {
+    state.gameOver = true;
+    drawBoard();
+    addLog(`<span class="event">🏆 ${p.name} wins the game!</span>`, 'win');
+    showWin(p);
+    state.rolling = false;
+    return;
+  }
+
+  endTurn();
+}
+
+function endTurn() {
+  state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
+  state.rolling = false;
+  rollBtn.disabled = false;
+  drawBoard();
+  renderPlayersBar();
+
+  const next = state.players[state.currentPlayer];
+  showToast(`${next.avatar} ${next.name}'s turn!`);
+}
+
+function getPlayerColor(idx) {
+  return ['#ff6b6b', '#4facfe', '#43e97b', '#f7c948'][idx] || '#fff';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ─── Win Modal ──────────────────────────────────────────────
+function showWin(player) {
+  document.getElementById('winEmoji').textContent = player.avatar;
+  document.getElementById('winTitle').textContent = `${player.name} Wins! 🏆`;
+  document.getElementById('winSub').textContent = `Congratulations! Landed on 100 and claimed victory!`;
+  document.getElementById('winModal').classList.add('show');
+}
+
+// ─── Setup ──────────────────────────────────────────────────
+function initAvatarPicker(containerId, stateKey, defaultAvatar) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  setupChoice[stateKey] = defaultAvatar;
+  AVATARS.forEach(av => {
+    const el = document.createElement('div');
+    el.className = 'avatar-opt' + (av === defaultAvatar ? ' selected' : '');
+    el.textContent = av;
+    el.addEventListener('click', () => {
+      setupChoice[stateKey] = av;
+      container.querySelectorAll('.avatar-opt').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+    container.appendChild(el);
+  });
+}
+
+function startGame() {
+  const p1name = document.getElementById('p1name').value.trim() || 'Player 1';
+  const p2name = document.getElementById('p2name').value.trim() || 'Player 2';
+
+  state = {
+    players: [
+      { name: p1name, avatar: setupChoice.av1, pos: 0 },
+      { name: p2name, avatar: setupChoice.av2, pos: 0 }
+    ],
+    currentPlayer: 0,
+    rolling: false,
+    gameOver: false,
+    lastRoll: 1
+  };
+
+  logList.innerHTML = '';
+  rollBtn.disabled = false;
+  showDice(1);
+  document.getElementById('setupModal').classList.remove('show');
+  renderPlayersBar();
+  requestAnimationFrame(drawBoard);
+  setTimeout(() => {
+    const p = state.players[0];
+    showToast(`${p.avatar} ${p.name} goes first!`);
+  }, 300);
+}
+
+function resetGame() {
+  state.players.forEach(p => p.pos = 0);
+  state.currentPlayer = 0;
+  state.rolling = false;
+  state.gameOver = false;
+  state.lastRoll = 1;
+  logList.innerHTML = '';
+  rollBtn.disabled = false;
+  showDice(1);
+  document.getElementById('winModal').classList.remove('show');
+  renderPlayersBar();
+  drawBoard();
+  showToast(`${state.players[0].avatar} ${state.players[0].name} goes first!`);
+}
+
+// ─── Events ─────────────────────────────────────────────────
+rollBtn.addEventListener('click', roll);
+diceEl.addEventListener('click', roll);
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('restartBtn').addEventListener('click', () => {
+  if (!state.players.length) return;
+  if (confirm('Restart the game?')) resetGame();
+});
+
+document.getElementById('playAgainBtn').addEventListener('click', resetGame);
+document.getElementById('newGameBtn').addEventListener('click', () => {
+  document.getElementById('winModal').classList.remove('show');
+  document.getElementById('setupModal').classList.add('show');
+});
+document.getElementById('infoBtn').addEventListener('click', () => {
+  document.getElementById('infoModal').classList.add('show');
+});
+document.getElementById('closeInfoBtn').addEventListener('click', () => {
+  document.getElementById('infoModal').classList.remove('show');
+});
+
+// ─── Init ───────────────────────────────────────────────────
+initAvatarPicker('av1pick', 'av1', '🔴');
+initAvatarPicker('av2pick', 'av2', '🔵');
+showDice(1);
+
+// Draw blank board on load
+window.addEventListener('load', () => {
+  state = { players: [], currentPlayer: 0, rolling: false, gameOver: false, lastRoll: 1 };
+  requestAnimationFrame(drawBoard);
+});
+
+window.addEventListener('resize', () => {
+  if (state.players.length) drawBoard();
+});
+</script>
 </body>
 </html>
