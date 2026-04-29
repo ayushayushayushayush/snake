@@ -1,1023 +1,2000 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Snake & Ladder" />
-  <title>Snake & Ladder</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #0f0c29;
-      --bg2: #1a1040;
-      --card: rgba(255,255,255,0.06);
-      --border: rgba(255,255,255,0.12);
-      --accent: #f7c948;
-      --accent2: #ff6b6b;
-      --green: #43e97b;
-      --blue: #4facfe;
-      --purple: #a78bfa;
-      --text: #f0eaff;
-      --muted: rgba(240,234,255,0.5);
-      --snake: #ff6b6b;
-      --ladder: #43e97b;
-      --radius: 16px;
-      --cell: min(calc((100vw - 32px) / 10), 52px);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA Network+ N10-009 Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #0f1525;
+    --surface2: #141c2e;
+    --border: #1e2d4a;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --glow: 0 0 20px rgba(0, 212, 255, 0.15);
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  html { scroll-behavior: smooth; }
 
-    /* Animated starfield bg */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 50%, rgba(120,80,255,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(247,201,72,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 80%, rgba(67,233,123,0.08) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+  }
 
-    .app {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 430px;
-      padding: 0 16px;
-      padding-bottom: 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  /* ===== BACKGROUND TEXTURE ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0, 212, 255, 0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    /* Header */
-    .header {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 56px 0 16px;
-    }
+  .page-wrapper { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
 
-    .logo {
-      font-family: 'Fredoka One', cursive;
-      font-size: 26px;
-      background: linear-gradient(135deg, var(--accent), #ff6b6b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 0.5px;
-    }
+  /* ===== HEADER ===== */
+  .hero {
+    padding: 60px 0 40px;
+    text-align: center;
+    position: relative;
+  }
 
-    .header-btns { display: flex; gap: 8px; }
+  .hero::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    margin-top: 40px;
+  }
 
-    .icon-btn {
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 18px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .icon-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.12); }
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    box-shadow: 0 0 12px rgba(0,212,255,0.2);
+  }
 
-    /* Player bar */
-    .players-bar {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e2e8f0 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
 
-    .player-card {
-      flex: 1;
-      background: var(--card);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: border-color 0.3s, background 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
+  .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+  }
 
-    .player-card.active {
-      border-color: var(--accent);
-      background: rgba(247,201,72,0.08);
-    }
+  /* ===== EXAM STATS ===== */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 30px 0 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
 
-    .player-card.active::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-    }
+  .stat-item {
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
 
-    .player-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      font-size: 20px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
+  .stat-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent);
+    display: block;
+  }
 
-    .player-info { flex: 1; min-width: 0; }
-    .player-name { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .player-pos { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
 
-    .turn-badge {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 6px;
-      background: var(--accent);
-      color: #1a1040;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .player-card.active .turn-badge { opacity: 1; }
+  /* ===== DOMAIN PROGRESS BARS ===== */
+  .domains-overview {
+    margin: 30px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+  }
 
-    /* Board */
-    .board-wrap {
-      width: 100%;
-      position: relative;
-    }
+  .domains-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
 
-    canvas#board {
-      width: 100%;
-      height: auto;
-      border-radius: 18px;
-      display: block;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1.5px rgba(255,255,255,0.08);
-    }
+  .domain-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
 
-    /* Dice & controls */
-    .controls {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 16px;
-      gap: 12px;
-    }
+  .domain-bar-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    min-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .dice-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
+  .domain-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
 
-    .dice {
-      width: 72px; height: 72px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #fff 0%, #e8e0ff 100%);
-      box-shadow: 0 4px 20px rgba(247,201,72,0.3), inset 0 -3px 0 rgba(0,0,0,0.15);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      padding: 8px;
-      gap: 4px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-      position: relative;
-      user-select: none;
-    }
-    .dice:active { transform: scale(0.93); }
-    .dice.rolling { animation: diceRoll 0.5s ease-out; }
+  .domain-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
 
-    @keyframes diceRoll {
-      0%   { transform: rotate(0deg) scale(1); }
-      25%  { transform: rotate(-20deg) scale(1.1); }
-      50%  { transform: rotate(15deg) scale(0.95); }
-      75%  { transform: rotate(-8deg) scale(1.05); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
+  .domain-bar-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 35px;
+    text-align: right;
+  }
 
-    .dot {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      background: #1a1040;
-      display: none;
-    }
-    .dot.visible { display: block; }
+  /* ===== NAV ===== */
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin: 30px 0;
+  }
 
-    .dice-label {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 12px;
+    transition: all 0.2s;
+  }
 
-    .roll-btn {
-      flex: 1;
-      height: 72px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--accent) 0%, #ff9f43 100%);
-      border: none;
-      color: #1a1040;
-      font-family: 'Fredoka One', cursive;
-      font-size: 22px;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(247,201,72,0.35), inset 0 -3px 0 rgba(0,0,0,0.15);
-      transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .roll-btn:active { transform: scale(0.96); }
-    .roll-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .toc-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
 
-    /* Log */
-    .log-wrap {
-      width: 100%;
-      margin-top: 16px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+  .toc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    opacity: 0.7;
+  }
 
-    .log-title {
-      padding: 10px 14px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
+  /* ===== SECTIONS ===== */
+  .section {
+    margin: 40px 0;
+  }
 
-    .log-list {
-      max-height: 120px;
-      overflow-y: auto;
-      padding: 8px 0;
-    }
+  .domain-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
 
-    .log-item {
-      padding: 5px 14px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-      animation: fadeIn 0.3s ease;
-    }
-    .log-item span { font-weight: 700; }
-    .log-item.snake span.event { color: var(--snake); }
-    .log-item.ladder span.event { color: var(--ladder); }
-    .log-item.win span.event { color: var(--accent); }
+  .domain-header::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+  }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .d1 .domain-header::before { background: var(--accent); }
+  .d2 .domain-header::before { background: var(--accent3); }
+  .d3 .domain-header::before { background: var(--accent4); }
+  .d4 .domain-header::before { background: var(--accent5); }
+  .d5 .domain-header::before { background: var(--accent2); }
 
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,12,41,0.85);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .domain-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
 
-    .modal {
-      width: 100%;
-      max-width: 360px;
-      background: var(--bg2);
-      border: 1.5px solid var(--border);
-      border-radius: 24px;
-      padding: 28px 24px;
-      text-align: center;
-      transform: scale(0.9) translateY(20px);
-      transition: transform 0.3s;
-    }
-    .modal-overlay.show .modal { transform: scale(1) translateY(0); }
+  .d1 .domain-num { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .d2 .domain-num { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .d3 .domain-num { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.3); }
+  .d4 .domain-num { background: rgba(239,68,68,0.1); color: var(--accent5); border: 1px solid rgba(239,68,68,0.3); }
+  .d5 .domain-num { background: rgba(124,58,237,0.1); color: var(--accent2); border: 1px solid rgba(124,58,237,0.3); }
 
-    .modal-emoji { font-size: 64px; margin-bottom: 12px; display: block; animation: bounce 0.6s ease 0.3s both; }
-    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .domain-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+  }
 
-    .modal h2 { font-family: 'Fredoka One', cursive; font-size: 28px; margin-bottom: 6px; }
-    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .domain-pct {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
 
-    .modal-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      font-family: 'Fredoka One', cursive;
-      font-size: 18px;
-      cursor: pointer;
-      transition: transform 0.1s, opacity 0.2s;
-      margin-bottom: 10px;
-    }
-    .modal-btn:active { transform: scale(0.97); }
-    .modal-btn.primary { background: linear-gradient(135deg, var(--accent), #ff9f43); color: #1a1040; }
-    .modal-btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  /* ===== SUBSECTIONS ===== */
+  .subsection {
+    margin: 24px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
 
-    /* Setup modal */
-    .setup-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
+  .subsection-header {
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .setup-row input {
-      flex: 1;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid var(--border);
-      color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .setup-row input:focus { border-color: var(--accent); }
-    .setup-row input::placeholder { color: var(--muted); }
+  .subsection-header .sub-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
 
-    .avatar-pick {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-    .avatar-opt {
-      width: 48px; height: 48px;
-      border-radius: 14px;
-      font-size: 24px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--card);
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.1s;
-    }
-    .avatar-opt:active { transform: scale(0.92); }
-    .avatar-opt.selected { border-color: var(--accent); background: rgba(247,201,72,0.12); }
+  .subsection-body { padding: 16px 20px; }
 
-    .section-label {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      text-align: left;
-      margin-bottom: 8px;
-    }
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 8px 0;
+  }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: rgba(26,16,64,0.95);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: 700;
-      z-index: 200;
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-  </style>
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(30,45,74,0.6);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+
+  td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ===== PORT TABLE SPECIAL ===== */
+  .port-table td:first-child {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ===== EXAM TIPS ===== */
+  .tip {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .tip strong {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ===== Q&A SECTION ===== */
+  .qa-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .qa-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .qa-q {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .qa-q:hover { background: rgba(255,255,255,0.03); }
+
+  .qa-q-icon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .qa-a {
+    padding: 0 16px 12px 38px;
+    font-size: 13px;
+    color: var(--accent3);
+    font-family: 'IBM Plex Mono', monospace;
+    display: none;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  .qa-item.open .qa-a { display: block; }
+
+  /* ===== ACRONYM GRID ===== */
+  .acronym-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 4px;
+  }
+
+  .acronym-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .acronym-item:hover { border-color: var(--border); }
+
+  .acronym-key {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .acronym-val {
+    color: var(--text-dim);
+  }
+
+  /* ===== PORT QUICK REF ===== */
+  .port-quick {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 4px;
+  }
+
+  .port-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .port-item:hover { border-color: var(--border); }
+
+  .port-num {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .port-name { color: var(--text-dim); }
+
+  /* ===== DIVIDERS ===== */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* ===== TAGS ===== */
+  .tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin: 2px 2px 2px 0;
+  }
+
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-green { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-red { background: rgba(239,68,68,0.1); color: var(--accent5); border: 1px solid rgba(239,68,68,0.2); }
+  .tag-yellow { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+
+  /* ===== OSI VISUAL ===== */
+  .osi-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 8px 0;
+  }
+
+  .osi-row {
+    display: grid;
+    grid-template-columns: 40px 160px 1fr 120px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+
+  .osi-row:hover { border-color: rgba(255,255,255,0.1); }
+
+  .osi-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+    text-align: center;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+  }
+
+  .osi-row:nth-child(1) { background: rgba(124,58,237,0.08); }
+  .osi-row:nth-child(1) .osi-num { background: rgba(124,58,237,0.2); color: #a78bfa; }
+  .osi-row:nth-child(2) { background: rgba(0,212,255,0.06); }
+  .osi-row:nth-child(2) .osi-num { background: rgba(0,212,255,0.2); color: var(--accent); }
+  .osi-row:nth-child(3) { background: rgba(16,185,129,0.06); }
+  .osi-row:nth-child(3) .osi-num { background: rgba(16,185,129,0.2); color: var(--accent3); }
+  .osi-row:nth-child(4) { background: rgba(245,158,11,0.06); }
+  .osi-row:nth-child(4) .osi-num { background: rgba(245,158,11,0.2); color: var(--accent4); }
+  .osi-row:nth-child(5) { background: rgba(239,68,68,0.06); }
+  .osi-row:nth-child(5) .osi-num { background: rgba(239,68,68,0.2); color: var(--accent5); }
+  .osi-row:nth-child(6) { background: rgba(251,191,36,0.06); }
+  .osi-row:nth-child(6) .osi-num { background: rgba(251,191,36,0.2); color: #fbbf24; }
+  .osi-row:nth-child(7) { background: rgba(167,139,250,0.06); }
+  .osi-row:nth-child(7) .osi-num { background: rgba(167,139,250,0.2); color: #c4b5fd; }
+
+  .osi-name { font-family: 'Syne', sans-serif; font-weight: 600; color: var(--text); }
+  .osi-pdu { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); }
+  .osi-protocols { color: var(--text-dim); font-size: 11px; }
+  .osi-function { color: var(--text-muted); font-size: 11px; }
+
+  @media (max-width: 700px) {
+    .osi-row { grid-template-columns: 36px 1fr; }
+    .osi-pdu, .osi-protocols, .osi-function { display: none; }
+    .stats-bar { flex-direction: column; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat-item:last-child { border-bottom: none; }
+    .domain-bar-label { min-width: 140px; font-size: 11px; }
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  /* ===== SCROLL INDICATOR ===== */
+  .scroll-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+    z-index: 100;
+  }
+
+  .scroll-top:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(0,212,255,0.2);
+  }
+
+  .highlight { color: var(--accent); }
+  .highlight-g { color: var(--accent3); }
+  .highlight-r { color: var(--accent5); }
+  .highlight-y { color: var(--accent4); }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 10px;
+  }
+</style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="logo">🎲 Snake & Ladder</div>
-    <div class="header-btns">
-      <button class="icon-btn" id="infoBtn" title="Rules">ℹ️</button>
-      <button class="icon-btn" id="restartBtn" title="Restart">🔄</button>
-    </div>
-  </div>
 
-  <div class="players-bar" id="playersBar"></div>
+<div class="page-wrapper">
 
-  <div class="board-wrap">
-    <canvas id="board"></canvas>
-  </div>
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="badge">EXAM · N10-009 · STUDY GUIDE</div>
+    <h1>CompTIA Network+</h1>
+    <p class="hero-sub">Complete Notes · Key Concepts · Ports & Protocols · Exam Tips · Practice Q&A · Acronym Reference</p>
 
-  <div class="controls">
-    <div class="dice-wrap">
-      <div class="dice" id="dice">
-        <!-- 9 dot slots, positions: tl, tc, tr, ml, mc, mr, bl, bc, br -->
-        <div class="dot" id="d0"></div><div class="dot" id="d1"></div><div class="dot" id="d2"></div>
-        <div class="dot" id="d3"></div><div class="dot" id="d4"></div><div class="dot" id="d5"></div>
-        <div class="dot" id="d6"></div><div class="dot" id="d7"></div><div class="dot" id="d8"></div>
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">N10-009</span>
+        <div class="stat-label">Exam Number</div>
       </div>
-      <div class="dice-label">Tap to roll</div>
-    </div>
-    <button class="roll-btn" id="rollBtn">🎲 Roll!</button>
-  </div>
-
-  <div class="log-wrap">
-    <div class="log-title">Game Log</div>
-    <div class="log-list" id="logList"></div>
-  </div>
-</div>
-
-<!-- Setup Modal -->
-<div class="modal-overlay show" id="setupModal">
-  <div class="modal">
-    <span class="modal-emoji">🎮</span>
-    <h2>Setup Game</h2>
-    <p>Enter player names and pick your pieces!</p>
-
-    <div class="section-label">Player 1</div>
-    <div class="setup-row">
-      <input type="text" id="p1name" placeholder="Player 1" maxlength="12" value="Player 1" />
-    </div>
-    <div class="avatar-pick" id="av1pick"></div>
-
-    <div class="section-label">Player 2</div>
-    <div class="setup-row">
-      <input type="text" id="p2name" placeholder="Player 2" maxlength="12" value="Player 2" />
-    </div>
-    <div class="avatar-pick" id="av2pick"></div>
-
-    <button class="modal-btn primary" id="startBtn">🚀 Start Game!</button>
-  </div>
-</div>
-
-<!-- Win Modal -->
-<div class="modal-overlay" id="winModal">
-  <div class="modal">
-    <span class="modal-emoji" id="winEmoji">🏆</span>
-    <h2 id="winTitle">Player Wins!</h2>
-    <p id="winSub">Congratulations! Amazing game.</p>
-    <button class="modal-btn primary" id="playAgainBtn">🎮 Play Again</button>
-    <button class="modal-btn secondary" id="newGameBtn">👥 New Players</button>
-  </div>
-</div>
-
-<!-- Info Modal -->
-<div class="modal-overlay" id="infoModal">
-  <div class="modal">
-    <span class="modal-emoji">📜</span>
-    <h2>How to Play</h2>
-    <p style="text-align:left;line-height:1.8;color:var(--text);">
-      🎲 <strong>Roll</strong> the dice on your turn.<br>
-      🪜 <strong>Ladders</strong> take you UP to a higher square.<br>
-      🐍 <strong>Snakes</strong> send you DOWN to a lower square.<br>
-      🏆 <strong>First to reach square 100 wins!</strong><br>
-      ⚠️ You must land <em>exactly</em> on 100 to win.
-    </p>
-    <button class="modal-btn primary" id="closeInfoBtn">Got it!</button>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script>
-// ─── Data ───────────────────────────────────────────────────
-const SNAKES = {
-  99: 21, 87: 36, 74: 53, 62: 19, 54: 34, 46: 5, 43: 18
-};
-const LADDERS = {
-  4: 25, 9: 31, 20: 42, 28: 84, 51: 67, 63: 81, 71: 91
-};
-
-const AVATARS = ['🔴','🔵','🟢','🟡','🟠','🟣','⚪','⚫'];
-
-// Dice dot patterns (which of the 9 slots are filled for 1-6)
-const DOT_PATTERNS = {
-  1: [4],
-  2: [2,6],
-  3: [2,4,6],
-  4: [0,2,6,8],
-  5: [0,2,4,6,8],
-  6: [0,2,3,5,6,8]
-};
-
-// ─── State ──────────────────────────────────────────────────
-let state = {
-  players: [],
-  currentPlayer: 0,
-  rolling: false,
-  gameOver: false,
-  lastRoll: 1
-};
-
-let setupChoice = { av1: '🔴', av2: '🔵' };
-
-// ─── DOM refs ───────────────────────────────────────────────
-const canvas = document.getElementById('board');
-const ctx = canvas.getContext('2d');
-const playersBar = document.getElementById('playersBar');
-const rollBtn = document.getElementById('rollBtn');
-const diceEl = document.getElementById('dice');
-const logList = document.getElementById('logList');
-const toast = document.getElementById('toast');
-
-// ─── Board drawing ──────────────────────────────────────────
-const COLS = 10;
-const ROWS = 10;
-let CELL = 0;
-let BOARD_SIZE = 0;
-
-function getCellCenter(n) {
-  // n: 1-100
-  const idx = n - 1; // 0-99
-  const row = Math.floor(idx / COLS); // 0=bottom,9=top in game
-  const col = idx % COLS;
-  // Board row 0 = bottom visually, row 9 = top
-  // But visually canvas y=0 is top
-  // Game: row 0 → visual row 9 (bottom of canvas)
-  const visualRow = ROWS - 1 - row;
-  // Snaking: even game-rows go left-to-right, odd go right-to-left
-  const visualCol = (row % 2 === 0) ? col : (COLS - 1 - col);
-  return {
-    x: visualCol * CELL + CELL / 2,
-    y: visualRow * CELL + CELL / 2
-  };
-}
-
-function drawBoard() {
-  const DPR = window.devicePixelRatio || 1;
-  const W = canvas.clientWidth;
-  BOARD_SIZE = W;
-  CELL = W / COLS;
-  canvas.width = W * DPR;
-  canvas.height = W * DPR;
-  ctx.scale(DPR, DPR);
-
-  // Background
-  const bg = ctx.createLinearGradient(0, 0, W, W);
-  bg.addColorStop(0, '#1e1458');
-  bg.addColorStop(1, '#12103a');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, W);
-
-  // Cells
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const x = c * CELL;
-      const y = r * CELL;
-      const gameRow = ROWS - 1 - r;
-      const gameCol = (gameRow % 2 === 0) ? c : (COLS - 1 - c);
-      const num = gameRow * COLS + gameCol + 1;
-
-      const isEven = (r + c) % 2 === 0;
-      ctx.fillStyle = isEven ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)';
-      ctx.fillRect(x, y, CELL, CELL);
-
-      // Highlight snake heads & ladder bottoms
-      if (SNAKES[num]) {
-        ctx.fillStyle = 'rgba(255,107,107,0.18)';
-        ctx.fillRect(x, y, CELL, CELL);
-      }
-      if (LADDERS[num]) {
-        ctx.fillStyle = 'rgba(67,233,123,0.18)';
-        ctx.fillRect(x, y, CELL, CELL);
-      }
-
-      // Cell number
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
-      ctx.font = `bold ${CELL * 0.22}px Nunito, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText(num, x + 3, y + 2);
-    }
-  }
-
-  // Grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= COLS; i++) {
-    ctx.beginPath(); ctx.moveTo(i * CELL, 0); ctx.lineTo(i * CELL, W); ctx.stroke();
-  }
-  for (let i = 0; i <= ROWS; i++) {
-    ctx.beginPath(); ctx.moveTo(0, i * CELL); ctx.lineTo(W, i * CELL); ctx.stroke();
-  }
-
-  // Draw snakes
-  Object.entries(SNAKES).forEach(([head, tail]) => {
-    drawSnake(+head, +tail);
-  });
-
-  // Draw ladders
-  Object.entries(LADDERS).forEach(([bottom, top]) => {
-    drawLadder(+bottom, +top);
-  });
-
-  // Cell 100 glow
-  const c100 = getCellCenter(100);
-  const grd = ctx.createRadialGradient(c100.x, c100.y, 0, c100.x, c100.y, CELL * 0.8);
-  grd.addColorStop(0, 'rgba(247,201,72,0.35)');
-  grd.addColorStop(1, 'transparent');
-  ctx.fillStyle = grd;
-  ctx.beginPath();
-  ctx.arc(c100.x, c100.y, CELL * 0.8, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Star at 100
-  ctx.font = `${CELL * 0.55}px serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('⭐', c100.x, c100.y);
-
-  // Draw players
-  state.players.forEach((p, i) => {
-    if (p.pos > 0) drawPiece(p.pos, p.avatar, i, state.players.length);
-  });
-}
-
-function drawSnake(head, tail) {
-  const hc = getCellCenter(head);
-  const tc = getCellCenter(tail);
-  // Bezier snake body
-  const cp1x = hc.x + (tc.x - hc.x) * 0.3 + 30;
-  const cp1y = hc.y + (tc.y - hc.y) * 0.3 - 20;
-  const cp2x = hc.x + (tc.x - hc.x) * 0.7 - 30;
-  const cp2y = hc.y + (tc.y - hc.y) * 0.7 + 20;
-
-  // Shadow
-  ctx.shadowColor = 'rgba(255,107,107,0.4)';
-  ctx.shadowBlur = 8;
-
-  // Body
-  ctx.beginPath();
-  ctx.moveTo(hc.x, hc.y);
-  ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, tc.x, tc.y);
-  ctx.strokeStyle = '#ff6b6b';
-  ctx.lineWidth = CELL * 0.18;
-  ctx.lineCap = 'round';
-  ctx.stroke();
-
-  // Lighter stripe
-  ctx.beginPath();
-  ctx.moveTo(hc.x, hc.y);
-  ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, tc.x, tc.y);
-  ctx.strokeStyle = 'rgba(255,200,180,0.4)';
-  ctx.lineWidth = CELL * 0.07;
-  ctx.stroke();
-
-  ctx.shadowBlur = 0;
-
-  // Head emoji
-  ctx.font = `${CELL * 0.5}px serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('🐍', hc.x, hc.y);
-}
-
-function drawLadder(bottom, top) {
-  const bc = getCellCenter(bottom);
-  const tc = getCellCenter(top);
-
-  const dx = tc.x - bc.x;
-  const dy = tc.y - bc.y;
-  const len = Math.sqrt(dx * dx + dy * dy);
-  const nx = -dy / len * CELL * 0.12;
-  const ny = dx / len * CELL * 0.12;
-
-  ctx.shadowColor = 'rgba(67,233,123,0.4)';
-  ctx.shadowBlur = 6;
-
-  // Two rails
-  [[nx, ny], [-nx, -ny]].forEach(([ox, oy]) => {
-    ctx.beginPath();
-    ctx.moveTo(bc.x + ox, bc.y + oy);
-    ctx.lineTo(tc.x + ox, tc.y + oy);
-    ctx.strokeStyle = '#43e97b';
-    ctx.lineWidth = CELL * 0.08;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-  });
-
-  // Rungs
-  const RUNGS = 5;
-  for (let i = 1; i < RUNGS; i++) {
-    const t = i / RUNGS;
-    const mx = bc.x + dx * t;
-    const my = bc.y + dy * t;
-    ctx.beginPath();
-    ctx.moveTo(mx + nx, my + ny);
-    ctx.lineTo(mx - nx, my - ny);
-    ctx.strokeStyle = '#6bffb8';
-    ctx.lineWidth = CELL * 0.06;
-    ctx.stroke();
-  }
-
-  ctx.shadowBlur = 0;
-
-  // Ladder emoji at bottom
-  ctx.font = `${CELL * 0.4}px serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('🪜', bc.x, bc.y);
-}
-
-function drawPiece(pos, avatar, playerIdx, total) {
-  const c = getCellCenter(pos);
-  // Offset multiple players
-  const offsets = [[0,0],[-6,-6],[6,6],[-6,6]];
-  const off = offsets[playerIdx] || [0,0];
-
-  const px = c.x + off[0];
-  const py = c.y + off[1];
-
-  // Glow ring for current player
-  if (playerIdx === state.currentPlayer && !state.gameOver) {
-    ctx.beginPath();
-    ctx.arc(px, py, CELL * 0.3, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(247,201,72,0.25)';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(247,201,72,0.8)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  ctx.font = `${CELL * 0.42}px serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(avatar, px, py);
-}
-
-// ─── Dice UI ────────────────────────────────────────────────
-function showDice(value) {
-  const pattern = DOT_PATTERNS[value] || [];
-  for (let i = 0; i < 9; i++) {
-    const dot = document.getElementById('d' + i);
-    dot.classList.toggle('visible', pattern.includes(i));
-  }
-}
-
-function animateDice(finalVal) {
-  return new Promise(resolve => {
-    diceEl.classList.add('rolling');
-    let ticks = 0;
-    const interval = setInterval(() => {
-      showDice(Math.ceil(Math.random() * 6));
-      ticks++;
-      if (ticks >= 8) {
-        clearInterval(interval);
-        diceEl.classList.remove('rolling');
-        showDice(finalVal);
-        resolve();
-      }
-    }, 70);
-  });
-}
-
-// ─── Log ────────────────────────────────────────────────────
-function addLog(msg, type = '') {
-  const el = document.createElement('div');
-  el.className = 'log-item ' + type;
-  el.innerHTML = msg;
-  logList.prepend(el);
-}
-
-// ─── Toast ──────────────────────────────────────────────────
-let toastTimer;
-function showToast(msg, duration = 1800) {
-  clearTimeout(toastTimer);
-  toast.textContent = msg;
-  toast.classList.add('show');
-  toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
-}
-
-// ─── Player Bar ─────────────────────────────────────────────
-function renderPlayersBar() {
-  playersBar.innerHTML = '';
-  state.players.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'player-card' + (i === state.currentPlayer && !state.gameOver ? ' active' : '');
-    card.innerHTML = `
-      <div class="player-avatar">${p.avatar}</div>
-      <div class="player-info">
-        <div class="player-name">${p.name}</div>
-        <div class="player-pos">Square ${p.pos === 0 ? 'Start' : p.pos}</div>
+      <div class="stat-item">
+        <span class="stat-value">90</span>
+        <div class="stat-label">Max Questions</div>
       </div>
-      <div class="turn-badge">Your Turn</div>
-    `;
-    playersBar.appendChild(card);
-  });
-}
+      <div class="stat-item">
+        <span class="stat-value">90 min</span>
+        <div class="stat-label">Time Limit</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">720/900</span>
+        <div class="stat-label">Passing Score</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">9–12 mo</span>
+        <div class="stat-label">Recommended Exp.</div>
+      </div>
+    </div>
 
-// ─── Roll logic ─────────────────────────────────────────────
-async function roll() {
-  if (state.rolling || state.gameOver) return;
-  state.rolling = true;
-  rollBtn.disabled = true;
+    <div class="domains-overview" style="margin-top:20px;">
+      <div class="domains-title">Exam Domain Weights</div>
+      <div class="domain-bar-row">
+        <div class="domain-bar-label">1.0 Networking Concepts</div>
+        <div class="domain-bar-track"><div class="domain-bar-fill" style="width:23%;background:var(--accent)"></div></div>
+        <div class="domain-bar-pct">23%</div>
+      </div>
+      <div class="domain-bar-row">
+        <div class="domain-bar-label">2.0 Network Implementation</div>
+        <div class="domain-bar-track"><div class="domain-bar-fill" style="width:20%;background:var(--accent3)"></div></div>
+        <div class="domain-bar-pct">20%</div>
+      </div>
+      <div class="domain-bar-row">
+        <div class="domain-bar-label">3.0 Network Operations</div>
+        <div class="domain-bar-track"><div class="domain-bar-fill" style="width:19%;background:var(--accent4)"></div></div>
+        <div class="domain-bar-pct">19%</div>
+      </div>
+      <div class="domain-bar-row">
+        <div class="domain-bar-label">4.0 Network Security</div>
+        <div class="domain-bar-track"><div class="domain-bar-fill" style="width:14%;background:var(--accent5)"></div></div>
+        <div class="domain-bar-pct">14%</div>
+      </div>
+      <div class="domain-bar-row">
+        <div class="domain-bar-label">5.0 Network Troubleshooting</div>
+        <div class="domain-bar-track"><div class="domain-bar-fill" style="width:24%;background:var(--accent2)"></div></div>
+        <div class="domain-bar-pct">24%</div>
+      </div>
+    </div>
 
-  const roll = Math.ceil(Math.random() * 6);
-  state.lastRoll = roll;
-  await animateDice(roll);
+    <!-- TOC -->
+    <div class="toc">
+      <a href="#d1" class="toc-link"><span class="toc-num">D1</span> Networking Concepts</a>
+      <a href="#d2" class="toc-link"><span class="toc-num">D2</span> Network Implementation</a>
+      <a href="#d3" class="toc-link"><span class="toc-num">D3</span> Network Operations</a>
+      <a href="#d4" class="toc-link"><span class="toc-num">D4</span> Network Security</a>
+      <a href="#d5" class="toc-link"><span class="toc-num">D5</span> Network Troubleshooting</a>
+      <a href="#qa" class="toc-link"><span class="toc-num">Q&A</span> Practice Questions</a>
+      <a href="#acronyms" class="toc-link"><span class="toc-num">REF</span> Acronyms</a>
+      <a href="#ports" class="toc-link"><span class="toc-num">REF</span> Port Numbers</a>
+    </div>
+  </div>
 
-  const p = state.players[state.currentPlayer];
-  const oldPos = p.pos;
-  let newPos = oldPos + roll;
+  <!-- ============================
+       DOMAIN 1
+  ============================= -->
+  <div class="section d1" id="d1">
+    <div class="domain-header">
+      <span class="domain-num">DOMAIN 1</span>
+      <h2 class="domain-title">Networking Concepts</h2>
+      <span class="domain-pct">23% of Exam</span>
+    </div>
 
-  addLog(`<span style="color:${getPlayerColor(state.currentPlayer)}">${p.avatar} ${p.name}</span> rolled a <span>${roll}</span>!`);
+    <!-- 1.1 OSI -->
+    <div class="subsection" id="s1-1">
+      <div class="subsection-header"><span class="sub-id">1.1</span> OSI Reference Model</div>
+      <div class="subsection-body">
+        <p style="color:var(--text-dim);font-size:13px;margin-bottom:12px;">The OSI (Open Systems Interconnection) model breaks network communication into 7 layers. Data flows <em>down</em> on the sender side and <em>up</em> on the receiver side.</p>
+        <div class="osi-layers">
+          <div class="osi-row">
+            <div class="osi-num">7</div>
+            <div class="osi-name">Application</div>
+            <div class="osi-protocols">HTTP, FTP, SMTP, DNS, SNMP, LDAP, SIP</div>
+            <div class="osi-pdu">Data</div>
+            <div class="osi-function">End-user protocols; what the user sees</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">6</div>
+            <div class="osi-name">Presentation</div>
+            <div class="osi-protocols">SSL/TLS (encryption), JPEG, MPEG</div>
+            <div class="osi-pdu">Data</div>
+            <div class="osi-function">Translation, compression, encryption/decryption</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">5</div>
+            <div class="osi-name">Session</div>
+            <div class="osi-protocols">RPC, NetBIOS, SIP (sessions)</div>
+            <div class="osi-pdu">Data</div>
+            <div class="osi-function">Opens, manages, and closes communication sessions</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">4</div>
+            <div class="osi-name">Transport</div>
+            <div class="osi-protocols">TCP, UDP</div>
+            <div class="osi-pdu">Segment / Datagram</div>
+            <div class="osi-function">End-to-end delivery, error recovery, flow control</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">3</div>
+            <div class="osi-name">Network</div>
+            <div class="osi-protocols">IP, ICMP, OSPF, EIGRP, BGP</div>
+            <div class="osi-pdu">Packet</div>
+            <div class="osi-function">Logical addressing (IP), routing between networks</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">2</div>
+            <div class="osi-name">Data Link</div>
+            <div class="osi-protocols">ARP, Ethernet, 802.11 Wi-Fi, STP</div>
+            <div class="osi-pdu">Frame</div>
+            <div class="osi-function">MAC addressing, switching, frames over local link</div>
+          </div>
+          <div class="osi-row">
+            <div class="osi-num">1</div>
+            <div class="osi-name">Physical</div>
+            <div class="osi-protocols">Cables, hubs, repeaters, transceivers</div>
+            <div class="osi-pdu">Bit</div>
+            <div class="osi-function">Raw bit transmission over physical media</div>
+          </div>
+        </div>
+        <div class="tip">
+          <strong>Exam Tip</strong>
+          Remember <em>"All People Seem To Need Data Processing"</em> (Application → Physical). Devices: Layer 1=Hub/Repeater · Layer 2=Switch/Bridge/NIC · Layer 3=Router/L3 Switch.
+        </div>
+      </div>
+    </div>
 
-  if (newPos > 100) {
-    showToast(`Need exact number to reach 100! Stay at ${oldPos}.`);
-    addLog(`<span style="color:var(--muted)">Too high! Stays at ${oldPos}.</span>`);
-    endTurn();
-    return;
-  }
+    <!-- 1.2 Appliances -->
+    <div class="subsection" id="s1-2">
+      <div class="subsection-header"><span class="sub-id">1.2</span> Networking Appliances & Functions</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Device / Function</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Router</td><td>Layer 3 device; routes packets between networks using IP addresses</td></tr>
+            <tr><td>Switch</td><td>Layer 2 device; forwards frames within a LAN using MAC addresses</td></tr>
+            <tr><td>Firewall</td><td>Filters traffic based on rules (ACLs); creates barrier between trusted and untrusted zones</td></tr>
+            <tr><td>IDS</td><td>Intrusion Detection System – monitors and <span class="highlight">ALERTS</span> but does <span class="highlight-r">NOT BLOCK</span> traffic (passive)</td></tr>
+            <tr><td>IPS</td><td>Intrusion Prevention System – monitors and <span class="highlight-r">ACTIVELY BLOCKS</span> threats (inline)</td></tr>
+            <tr><td>Load Balancer</td><td>Distributes incoming traffic evenly across multiple servers</td></tr>
+            <tr><td>Proxy Server</td><td>Intermediary between clients and internet; can cache, filter, and hide internal IPs</td></tr>
+            <tr><td>NAS</td><td>Network-Attached Storage – dedicated file-sharing device on a LAN</td></tr>
+            <tr><td>SAN</td><td>Storage Area Network – dedicated high-speed network for block-level storage</td></tr>
+            <tr><td>Wireless AP</td><td>Connects wireless clients to a wired network (bridges 802.11 to 802.3)</td></tr>
+            <tr><td>WAP Controller</td><td>Centrally manages multiple lightweight APs (vs. autonomous AP = self-managed)</td></tr>
+            <tr><td>CDN</td><td>Content Delivery Network – edge servers cache content close to users to reduce latency</td></tr>
+            <tr><td>VPN</td><td>Virtual Private Network – encrypted tunnel over public network for secure remote access</td></tr>
+            <tr><td>QoS</td><td>Quality of Service – prioritizes certain traffic types (e.g., VoIP over browsing)</td></tr>
+            <tr><td>TTL</td><td>Time to Live – field in IP header limiting how many hops a packet can travel</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  // Move
-  p.pos = newPos;
-  drawBoard();
-  renderPlayersBar();
+    <!-- 1.3 Cloud -->
+    <div class="subsection" id="s1-3">
+      <div class="subsection-header"><span class="sub-id">1.3</span> Cloud Concepts & Connectivity</div>
+      <div class="subsection-body">
+        <h3>Deployment Models</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td>Public Cloud</td><td>Resources owned by 3rd-party provider, shared across tenants (AWS, Azure, GCP)</td></tr>
+            <tr><td>Private Cloud</td><td>Resources used exclusively by one organization</td></tr>
+            <tr><td>Hybrid Cloud</td><td>Combination of public and private clouds</td></tr>
+            <tr><td>VPC</td><td>Virtual Private Cloud – isolated private network within a public cloud</td></tr>
+          </tbody>
+        </table>
+        <h3>Service Models</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td>SaaS</td><td>Software as a Service – remote access to software apps (e.g., Office 365, Gmail)</td></tr>
+            <tr><td>PaaS</td><td>Platform as a Service – dev platform for building apps (e.g., Heroku, Google App Engine)</td></tr>
+            <tr><td>IaaS</td><td>Infrastructure as a Service – outsourced compute/storage/networking hardware resources</td></tr>
+          </tbody>
+        </table>
+        <h3>Cloud Terminology</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td>NFV</td><td>Network Functions Virtualization – replaces physical network hardware with software</td></tr>
+            <tr><td>Scalability</td><td>Planned, deliberate addition of resources to handle increased load</td></tr>
+            <tr><td>Elasticity</td><td>Automatic, dynamic adjustment of resources based on real-time demand</td></tr>
+            <tr><td>Multitenancy</td><td>Multiple users served by one application instance with isolated environments</td></tr>
+            <tr><td>Internet Gateway</td><td>Allows cloud instances to send/receive unencrypted traffic to/from Internet</td></tr>
+            <tr><td>NAT Gateway</td><td>Translates private IPs to public IP; restricts inbound connections from outside</td></tr>
+            <tr><td>Direct Connect</td><td>Dedicated private connection between on-prem network and cloud provider</td></tr>
+            <tr><td>NSG</td><td>Network Security Group – granular firewall rules applied to individual virtual NICs</td></tr>
+            <tr><td>NSL</td><td>Network Security List – subnet-level firewall rules (less granular than NSG)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  await sleep(400);
+    <!-- 1.4 Ports & Protocols -->
+    <div class="subsection" id="s1-4">
+      <div class="subsection-header"><span class="sub-id">1.4</span> Ports, Protocols & Traffic Types</div>
+      <div class="subsection-body">
+        <table class="port-table">
+          <thead><tr><th>Port</th><th>Protocol</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>20</td><td>FTP (data)</td><td>File transfer data; insecure – prefer SFTP/FTPS</td></tr>
+            <tr><td>21</td><td>FTP (control)</td><td>FTP session control; insecure</td></tr>
+            <tr><td>22</td><td>SSH / SFTP</td><td>Secure shell & secure file transfer; TCP</td></tr>
+            <tr><td>23</td><td>Telnet</td><td><span class="highlight-r">Insecure</span> remote login – REPLACE with SSH</td></tr>
+            <tr><td>25</td><td>SMTP</td><td>Send email between servers (client→server or server→server)</td></tr>
+            <tr><td>53</td><td>DNS</td><td>Domain Name System; both UDP and TCP</td></tr>
+            <tr><td>67</td><td>DHCP (server)</td><td>UDP – DHCP server listens here</td></tr>
+            <tr><td>68</td><td>DHCP (client)</td><td>UDP – DHCP client listens here</td></tr>
+            <tr><td>69</td><td>TFTP</td><td>Trivial FTP – no auth, no encryption; UDP</td></tr>
+            <tr><td>80</td><td>HTTP</td><td>Hypertext Transfer Protocol; <span class="highlight-r">insecure</span></td></tr>
+            <tr><td>123</td><td>NTP</td><td>Network Time Protocol; UDP</td></tr>
+            <tr><td>161</td><td>SNMP Agent</td><td>UDP – agent receives requests</td></tr>
+            <tr><td>162</td><td>SNMP Manager</td><td>UDP – manager receives traps/notifications</td></tr>
+            <tr><td>389</td><td>LDAP</td><td>Lightweight Directory Access Protocol; TCP</td></tr>
+            <tr><td>443</td><td>HTTPS</td><td>HTTP over TLS; <span class="highlight-g">secure</span> web traffic</td></tr>
+            <tr><td>445</td><td>SMB</td><td>Server Message Block – file/printer sharing</td></tr>
+            <tr><td>514</td><td>Syslog</td><td>Log messages; UDP</td></tr>
+            <tr><td>587</td><td>SMTPS</td><td>SMTP Secure – send email over TLS</td></tr>
+            <tr><td>636</td><td>LDAPS</td><td>LDAP over SSL/TLS</td></tr>
+            <tr><td>853</td><td>DoT</td><td>DNS over TLS</td></tr>
+            <tr><td>1433</td><td>SQL Server</td><td>Microsoft SQL Server database; TCP</td></tr>
+            <tr><td>3389</td><td>RDP</td><td>Remote Desktop Protocol; TCP</td></tr>
+            <tr><td>5060</td><td>SIP (plain)</td><td>Session Initiation Protocol (unencrypted)</td></tr>
+            <tr><td>5061</td><td>SIP (TLS)</td><td>SIP over TLS (encrypted)</td></tr>
+          </tbody>
+        </table>
+        <h3>IP Protocol Types & Traffic</h3>
+        <table>
+          <thead><tr><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>ICMP</td><td>Internet Control Message Protocol – error messages, ping, traceroute</td></tr>
+            <tr><td>TCP</td><td>Connection-oriented; 3-way handshake (SYN/SYN-ACK/ACK); reliable, ordered delivery</td></tr>
+            <tr><td>UDP</td><td>Connectionless; no handshake; faster, used for streaming, DNS, DHCP, VoIP</td></tr>
+            <tr><td>GRE</td><td>Generic Routing Encapsulation – tunneling protocol; NO encryption/auth itself</td></tr>
+            <tr><td>IPSec AH</td><td>Authentication Header – integrity + authentication; <span class="highlight-r">NO encryption</span></td></tr>
+            <tr><td>IPSec ESP</td><td>Encapsulating Security Payload – confidentiality + integrity + auth (provides encryption)</td></tr>
+            <tr><td>IPSec IKE</td><td>Internet Key Exchange – negotiates and sets up IPSec SAs, exchanges keys</td></tr>
+            <tr><td>Unicast</td><td>One-to-one traffic (specific destination IP)</td></tr>
+            <tr><td>Multicast</td><td>One-to-many (specific group; Class D: 224–239.x.x.x)</td></tr>
+            <tr><td>Anycast</td><td>One-to-nearest (IPv6 only – delivers to the nearest node in a group)</td></tr>
+            <tr><td>Broadcast</td><td>One-to-all within a network segment</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  // Check snake
-  if (SNAKES[newPos]) {
-    const dest = SNAKES[newPos];
-    showToast(`😱 Snake! ${p.name} slides from ${newPos} → ${dest}`);
-    addLog(`<span class="event">🐍 Snake! ${p.name} bites from ${newPos} to ${dest}</span>`, 'snake');
-    await sleep(600);
-    p.pos = dest;
-    drawBoard();
-    renderPlayersBar();
-  }
-  // Check ladder
-  else if (LADDERS[newPos]) {
-    const dest = LADDERS[newPos];
-    showToast(`🪜 Ladder! ${p.name} climbs from ${newPos} → ${dest}`);
-    addLog(`<span class="event">🪜 Ladder! ${p.name} climbs from ${newPos} to ${dest}</span>`, 'ladder');
-    await sleep(600);
-    p.pos = dest;
-    drawBoard();
-    renderPlayersBar();
-  }
+    <!-- 1.5 Transmission Media -->
+    <div class="subsection" id="s1-5">
+      <div class="subsection-header"><span class="sub-id">1.5</span> Transmission Media & Transceivers</div>
+      <div class="subsection-body">
+        <h3>Wired Cable Types</h3>
+        <table>
+          <thead><tr><th>Cable Type</th><th>Specs / Use Case</th></tr></thead>
+          <tbody>
+            <tr><td>Cat 5e</td><td>Min for Gigabit Ethernet (1000BASE-T); 100m max; 1 Gbps</td></tr>
+            <tr><td>Cat 6</td><td>Min for limited 10GbE (10GBASE-T @ 55m); 100m for 1 Gbps</td></tr>
+            <tr><td>Cat 6A</td><td>10 Gbps up to 100m (augmented)</td></tr>
+            <tr><td>Cat 7</td><td>10 Gbps up to 100m; shielded</td></tr>
+            <tr><td>Cat 8</td><td>25/40 Gbps; ~30m; data center use</td></tr>
+            <tr><td>UTP</td><td>Unshielded Twisted Pair – most susceptible to EMI/RFI</td></tr>
+            <tr><td>STP</td><td>Shielded Twisted Pair – reduces crosstalk and EMI</td></tr>
+            <tr><td>Multimode Fiber</td><td>LED-based; short distances; cheaper; up to 400 Gbps; SR/SX standards</td></tr>
+            <tr><td>Single-Mode Fiber</td><td>Laser-based; long distances (miles); more expensive; up to 400 Gbps; LR/LX standards</td></tr>
+            <tr><td>Coaxial</td><td>Used for cable TV and broadband; features central conductor; RG types</td></tr>
+            <tr><td>Twinaxial (DAC)</td><td>Direct Attach Copper; short-range data center high-speed links</td></tr>
+            <tr><td>Plenum-rated</td><td>Fire-retardant jacket (PVC/FEP); required in air-handling spaces (drop ceilings)</td></tr>
+          </tbody>
+        </table>
+        <h3>Ethernet Standards (802.3)</h3>
+        <table>
+          <thead><tr><th>Standard</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>10BASE2 (ThinNet)</td><td>10 Mbps, thin coaxial cable</td></tr>
+            <tr><td>10BASE5 (ThickNet)</td><td>10 Mbps, thick coaxial cable</td></tr>
+            <tr><td>1000BASE-T</td><td>1 Gbps over copper twisted pair (Cat 5e+)</td></tr>
+            <tr><td>1000BASE-SX</td><td>1 Gbps over multimode fiber (short range)</td></tr>
+            <tr><td>1000BASE-LX</td><td>1 Gbps over single-mode fiber (long range)</td></tr>
+            <tr><td>10GBASE-SR</td><td>10 Gbps over multimode fiber (short range)</td></tr>
+            <tr><td>10GBASE-LR</td><td>10 Gbps over single-mode fiber (long range)</td></tr>
+            <tr><td>10GBASE-CR</td><td>10 Gbps over twinaxial copper (DAC cable)</td></tr>
+            <tr><td>10GBASE-T</td><td>10 Gbps over copper (Cat 6 @ 55m, Cat 6A @ 100m)</td></tr>
+          </tbody>
+        </table>
+        <h3>Connectors</h3>
+        <table>
+          <thead><tr><th>Connector</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>SC</td><td>Subscriber Connector – fiber optic; push-pull coupling</td></tr>
+            <tr><td>LC</td><td>Local Connector – small form factor fiber; most common in data centers</td></tr>
+            <tr><td>ST</td><td>Straight Tip – older fiber connector; bayonet coupling</td></tr>
+            <tr><td>MPO</td><td>Multi-Fiber Push On – up to 72 fibers; data center high-density</td></tr>
+            <tr><td>RJ11</td><td>Telephone equipment; dial-up; 2-wire twisted pair</td></tr>
+            <tr><td>RJ45</td><td>Standard Ethernet connector; 8-wire twisted pair; LAN</td></tr>
+            <tr><td>F-type</td><td>Coaxial; threaded (screw-on); cable TV / broadband modems</td></tr>
+            <tr><td>BNC</td><td>Bayonet Neill–Concelman; coaxial; twist-and-lock; older network/video</td></tr>
+            <tr><td>SFP</td><td>Small Form-factor Pluggable – modular, hot-swappable transceiver</td></tr>
+            <tr><td>QSFP</td><td>Quad SFP – 4-channel version; higher bandwidth</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  await sleep(200);
+    <!-- 1.6 Topologies -->
+    <div class="subsection" id="s1-6">
+      <div class="subsection-header"><span class="sub-id">1.6</span> Network Topologies, Architectures & Types</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Topology</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Star / Hub-and-Spoke</td><td>All devices connect to a central hub/switch. Most common LAN topology. Single point of failure at center.</td></tr>
+            <tr><td>Mesh</td><td>Every node connects to every other node. Highest redundancy. Expensive. Used on WANs/Internet.</td></tr>
+            <tr><td>Point-to-Point</td><td>Direct link between exactly two hosts. Simplest topology.</td></tr>
+            <tr><td>Hybrid</td><td>Combination of two or more topologies.</td></tr>
+            <tr><td>Spine and Leaf</td><td>Two-layer full-mesh in data centers. Every leaf connects to every spine. Max 2 hops between servers.</td></tr>
+            <tr><td>Three-Tier Model</td><td>Core (backbone, high-speed) → Distribution (routing/filtering) → Access (end devices)</td></tr>
+            <tr><td>Collapsed Core</td><td>Core + Distribution merged into one layer. Used in smaller networks to reduce cost.</td></tr>
+            <tr><td>North-South Traffic</td><td>Between a data center and external networks (Internet)</td></tr>
+            <tr><td>East-West Traffic</td><td>Between servers/devices within the same data center</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  // Win check
-  if (p.pos === 100) {
-    state.gameOver = true;
-    drawBoard();
-    addLog(`<span class="event">🏆 ${p.name} wins the game!</span>`, 'win');
-    showWin(p);
-    state.rolling = false;
-    return;
-  }
+    <!-- 1.7 IPv4 -->
+    <div class="subsection" id="s1-7">
+      <div class="subsection-header"><span class="sub-id">1.7</span> IPv4 Network Addressing & Subnetting</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Class</th><th>First Octet</th><th>Private Range</th><th>Default Mask</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>Class A</td><td>1–126</td><td>10.0.0.0–10.255.255.255</td><td>255.0.0.0 (/8)</td><td>Large networks</td></tr>
+            <tr><td>Class B</td><td>128–191</td><td>172.16.0.0–172.31.255.255</td><td>255.255.0.0 (/16)</td><td>Medium networks</td></tr>
+            <tr><td>Class C</td><td>192–223</td><td>192.168.0.0–192.168.255.255</td><td>255.255.255.0 (/24)</td><td>Small networks</td></tr>
+            <tr><td>Class D</td><td>224–239</td><td>Multicast</td><td>N/A</td><td>Multicast groups</td></tr>
+            <tr><td>Class E</td><td>240–255</td><td>Reserved</td><td>N/A</td><td>Experimental</td></tr>
+          </tbody>
+        </table>
+        <h3>Key Concepts</h3>
+        <table>
+          <thead><tr><th>Concept</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>APIPA</td><td>169.254.0.0/16 – auto-assigned when DHCP unavailable; local segment only</td></tr>
+            <tr><td>Loopback</td><td>127.0.0.0/8 (commonly 127.0.0.1 = localhost) – test local NIC</td></tr>
+            <tr><td>RFC 1918</td><td>Defines private IP ranges: 10.x.x.x, 172.16–31.x.x, 192.168.x.x</td></tr>
+            <tr><td>CIDR</td><td>Classless Inter-Domain Routing – replaces classful design; uses prefix notation (/24)</td></tr>
+            <tr><td>VLSM</td><td>Variable Length Subnet Mask – allows subnets of different sizes in same network</td></tr>
+            <tr><td>/30</td><td>255.255.255.252 → 4 addresses, 2 hosts – used for point-to-point links</td></tr>
+            <tr><td>/26</td><td>255.255.255.192 → 64 addresses, 62 hosts</td></tr>
+            <tr><td>/24</td><td>255.255.255.0 → 256 addresses, 254 hosts (most common)</td></tr>
+          </tbody>
+        </table>
+        <div class="tip">
+          <strong>Exam Tip – Subnetting</strong>
+          Total hosts = 2^(host bits). Usable = total − 2 (network address + broadcast). Network address = first IP, Broadcast = last IP.
+          <br><br>
+          /25=128 · /26=64 · /27=32 · /28=16 · /29=8 · /30=4 · /31=2 · /32=1
+        </div>
+      </div>
+    </div>
 
-  endTurn();
-}
+    <!-- 1.8 IPv6 -->
+    <div class="subsection" id="s1-8">
+      <div class="subsection-header"><span class="sub-id">1.8</span> IPv6 & Modern Network Environments</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>IPv6 Format</td><td>128-bit address expressed in 8 groups of 4 hex digits. <code>::</code> compresses consecutive zeros.</td></tr>
+            <tr><td>Link-Local</td><td>FE80::/10 – equivalent to IPv4 APIPA; not routable; auto-configured</td></tr>
+            <tr><td>Global Unicast</td><td>Starts with 2000–3FFF (2xxx or 3xxx); publicly routable; equivalent to public IPv4</td></tr>
+            <tr><td>Loopback</td><td>::1 – equivalent to 127.0.0.1</td></tr>
+            <tr><td>Anycast</td><td>IPv6-only one-to-nearest delivery type</td></tr>
+            <tr><td>SLAAC</td><td>Stateless Address Autoconfiguration – devices auto-configure IPv6 without DHCP</td></tr>
+            <tr><td>Tunneling</td><td>Encapsulates IPv6 packets in IPv4 headers to traverse IPv4 networks</td></tr>
+            <tr><td>Dual Stack</td><td>Device runs both IPv4 and IPv6 simultaneously for migration</td></tr>
+            <tr><td>NAT64</td><td>Allows IPv6-only devices to communicate with IPv4-only servers</td></tr>
+            <tr><td>Address Exhaustion</td><td>Primary reason IPv6 was developed (IPv4 ran out of addresses)</td></tr>
+          </tbody>
+        </table>
+        <h3>Modern Network Technologies</h3>
+        <table>
+          <thead><tr><th>Technology</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>SDN</td><td>Software-Defined Network – software-based control of network; central policy management; application-aware</td></tr>
+            <tr><td>SD-WAN</td><td>Software-Defined WAN – software-managed WAN connections; transport agnostic</td></tr>
+            <tr><td>VXLAN</td><td>Virtual Extensible LAN – overcomes 4094 VLAN limit; uses Layer 2 encapsulation over Layer 3</td></tr>
+            <tr><td>ZTA</td><td>Zero Trust Architecture – no implicit trust; policy-based auth; continuous verification; least privilege</td></tr>
+            <tr><td>SASE</td><td>Secure Access Service Edge – combines networking + security into single cloud-based service</td></tr>
+            <tr><td>SSE</td><td>Security Service Edge – cloud security services only (subset of SASE)</td></tr>
+            <tr><td>IaC</td><td>Infrastructure as Code – manage infrastructure through scripts/templates; version control; branching</td></tr>
+            <tr><td>NFV</td><td>Network Functions Virtualization – replaces physical network hardware with software</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-function endTurn() {
-  state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
-  state.rolling = false;
-  rollBtn.disabled = false;
-  drawBoard();
-  renderPlayersBar();
+  <div class="section-divider"></div>
 
-  const next = state.players[state.currentPlayer];
-  showToast(`${next.avatar} ${next.name}'s turn!`);
-}
+  <!-- ============================
+       DOMAIN 2
+  ============================= -->
+  <div class="section d2" id="d2">
+    <div class="domain-header">
+      <span class="domain-num">DOMAIN 2</span>
+      <h2 class="domain-title">Network Implementation</h2>
+      <span class="domain-pct">20% of Exam</span>
+    </div>
 
-function getPlayerColor(idx) {
-  return ['#ff6b6b', '#4facfe', '#43e97b', '#f7c948'][idx] || '#fff';
-}
+    <!-- 2.1 Routing -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">2.1</span> Routing Technologies</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Static Routing</td><td>Manually configured by admin; simple; high security (no updates exchanged); not scalable</td></tr>
+            <tr><td>Dynamic Routing</td><td>Automatically discovers routes; adapts to changes; scalable for large networks</td></tr>
+            <tr><td>RIP</td><td>Routing Information Protocol – distance-vector; max 15 hops; older, small networks</td></tr>
+            <tr><td>OSPF</td><td>Open Shortest Path First – link-state; most popular; uses cost (bandwidth); fast convergence; IGP</td></tr>
+            <tr><td>EIGRP</td><td>Enhanced IGRP – hybrid (Cisco); uses composite metrics (BW, delay, load, reliability); IGP</td></tr>
+            <tr><td>BGP</td><td>Border Gateway Protocol – path-vector; used on the Internet between ASs; EGP</td></tr>
+            <tr><td>IS-IS</td><td>Intermediate System to IS – link-state; large service provider networks; IGP</td></tr>
+            <tr><td>Admin Distance</td><td>Value ranking route trustworthiness; <span class="highlight">LOWER = more preferred</span></td></tr>
+            <tr><td>Prefix Length</td><td>Longer prefix (/28 > /24) = more specific route = preferred</td></tr>
+            <tr><td>NAT</td><td>Network Address Translation – maps private IPs to public IP</td></tr>
+            <tr><td>PAT</td><td>Port Address Translation – maps many private IPs to one public IP using port numbers</td></tr>
+            <tr><td>FHRP</td><td>First Hop Redundancy Protocol – virtual IP shared among redundant gateway routers; auto-failover</td></tr>
+            <tr><td>VIP</td><td>Virtual IP – shared address assigned to multiple devices for redundancy or load balancing</td></tr>
+            <tr><td>Subinterface</td><td>Logical division of a physical interface; allows multiple VLANs on one physical port</td></tr>
+          </tbody>
+        </table>
+        <div class="tip">
+          <strong>Exam Tip</strong>
+          Distance-vector (RIP – hop count) · Link-state (OSPF, IS-IS – full topology map) · Hybrid (EIGRP – combines both) · Path-vector (BGP – AS path). IGPs route within an AS; BGP is the only EGP.
+        </div>
+      </div>
+    </div>
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    <!-- 2.2 Switching -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">2.2</span> Switching Technologies</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>VLAN</td><td>Virtual LAN – logical grouping of devices regardless of physical location; reduces broadcast domains</td></tr>
+            <tr><td>VLAN Database</td><td>Centrally stores all configured VLANs on a switch</td></tr>
+            <tr><td>SVI</td><td>Switch Virtual Interface – logical interface for inter-VLAN routing</td></tr>
+            <tr><td>Native VLAN</td><td>Handles untagged frames on a trunk port (default VLAN 1)</td></tr>
+            <tr><td>Voice VLAN</td><td>Dedicated VLAN for VoIP traffic to ensure QoS</td></tr>
+            <tr><td>802.1Q Tagging</td><td>Standard method to tag frames with VLAN ID on trunk ports</td></tr>
+            <tr><td>Link Aggregation (LACP)</td><td>Combines multiple physical ports into one logical channel for bandwidth and redundancy</td></tr>
+            <tr><td>Half-duplex</td><td>Communication in one direction at a time</td></tr>
+            <tr><td>Full-duplex</td><td>Simultaneous two-way communication</td></tr>
+            <tr><td>STP</td><td>Spanning Tree Protocol – prevents switching loops by blocking redundant paths</td></tr>
+            <tr><td>RSTP</td><td>Rapid STP – faster convergence than STP; preferred</td></tr>
+            <tr><td>MTU</td><td>Maximum Transmission Unit – max data size per frame (standard Ethernet = 1500 bytes)</td></tr>
+            <tr><td>Jumbo Frames</td><td>Ethernet frames larger than standard 1518 bytes (typically 9000 bytes)</td></tr>
+            <tr><td>Port Mirroring (SPAN)</td><td>Copies traffic from one port to another for analysis with a packet sniffer</td></tr>
+          </tbody>
+        </table>
+        <div class="tip">
+          <strong>Exam Tip – STP Port States</strong>
+          Blocking → Listening → Learning → Forwarding → Disabled. Root bridge selected by <em>lowest</em> Bridge ID (priority + MAC). Root port = best path to root bridge. Designated port = best port on each segment. Blocked port = prevents loops.
+        </div>
+      </div>
+    </div>
 
-// ─── Win Modal ──────────────────────────────────────────────
-function showWin(player) {
-  document.getElementById('winEmoji').textContent = player.avatar;
-  document.getElementById('winTitle').textContent = `${player.name} Wins! 🏆`;
-  document.getElementById('winSub').textContent = `Congratulations! Landed on 100 and claimed victory!`;
-  document.getElementById('winModal').classList.add('show');
-}
+    <!-- 2.3 Wireless -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">2.3</span> Wireless Technologies</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Standard</th><th>Frequency</th><th>Max Speed</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>802.11a</td><td>5 GHz</td><td>54 Mbps</td><td>Wi-Fi 1; older; 5 GHz only</td></tr>
+            <tr><td>802.11b</td><td>2.4 GHz</td><td>11 Mbps</td><td>Wi-Fi 2; long range; slow</td></tr>
+            <tr><td>802.11g</td><td>2.4 GHz</td><td>54 Mbps</td><td>Wi-Fi 3; backward compatible with b</td></tr>
+            <tr><td>802.11n</td><td>2.4 + 5 GHz</td><td>600 Mbps</td><td>Wi-Fi 4; MIMO; dual-band</td></tr>
+            <tr><td>802.11ac</td><td>5 GHz</td><td>6.9 Gbps</td><td>Wi-Fi 5; MU-MIMO</td></tr>
+            <tr><td>802.11ax</td><td>2.4 + 5 + 6 GHz</td><td>9.6 Gbps</td><td>Wi-Fi 6/6E; OFDMA; 6E adds 6 GHz</td></tr>
+          </tbody>
+        </table>
+        <h3>Wireless Concepts</h3>
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>2.4 GHz band</td><td>Longest range; most interference; only 3 non-overlapping channels (1, 6, 11); 11 channels total</td></tr>
+            <tr><td>5 GHz band</td><td>Shorter range; less interference; more non-overlapping channels</td></tr>
+            <tr><td>6 GHz band</td><td>Newest (Wi-Fi 6E only); shortest range; least congestion; most channels</td></tr>
+            <tr><td>Band Steering</td><td>Guides dual-band devices to the best available frequency</td></tr>
+            <tr><td>802.11h</td><td>Amendment for spectrum and power management (DFS/TPC) in 5 GHz</td></tr>
+            <tr><td>SSID</td><td>Service Set Identifier – the Wi-Fi network name users see</td></tr>
+            <tr><td>BSSID</td><td>MAC address of the AP; unique per AP in a network</td></tr>
+            <tr><td>BSS</td><td>Basic Service Set – one AP + its clients</td></tr>
+            <tr><td>ESS</td><td>Extended Service Set – multiple APs with same SSID (roaming)</td></tr>
+            <tr><td>WPA2</td><td>Uses AES/CCMP; PSK (home) or Enterprise (RADIUS server) modes</td></tr>
+            <tr><td>WPA3</td><td>Strongest current Wi-Fi encryption; SAE replaces PSK; required for large secure networks</td></tr>
+            <tr><td>WPS</td><td>Wi-Fi Protected Setup – <span class="highlight-r">security risk; should be disabled</span></td></tr>
+            <tr><td>WEP</td><td>Wired Equivalent Privacy – <span class="highlight-r">deprecated; vulnerable; do not use</span></td></tr>
+            <tr><td>Captive Portal</td><td>Restricts access until user completes action (login/accept terms)</td></tr>
+            <tr><td>Autonomous AP</td><td>Self-managed; no controller required; good for small deployments</td></tr>
+            <tr><td>Lightweight AP</td><td>Requires Wireless LAN Controller (WLC) for centralized management</td></tr>
+            <tr><td>Omnidirectional</td><td>360-degree coverage; standard for indoor APs</td></tr>
+            <tr><td>Directional</td><td>Focused beam; used for long-range point-to-point links (Yagi, dish, parabolic)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-// ─── Setup ──────────────────────────────────────────────────
-function initAvatarPicker(containerId, stateKey, defaultAvatar) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  setupChoice[stateKey] = defaultAvatar;
-  AVATARS.forEach(av => {
-    const el = document.createElement('div');
-    el.className = 'avatar-opt' + (av === defaultAvatar ? ' selected' : '');
-    el.textContent = av;
-    el.addEventListener('click', () => {
-      setupChoice[stateKey] = av;
-      container.querySelectorAll('.avatar-opt').forEach(x => x.classList.remove('selected'));
-      el.classList.add('selected');
-    });
-    container.appendChild(el);
-  });
-}
+    <!-- 2.4 Physical -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">2.4</span> Physical Installations</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>MDF</td><td>Main Distribution Frame – main hub connecting internal networks to outside cabling</td></tr>
+            <tr><td>IDF</td><td>Intermediate Distribution Frame – connects MDF wiring to end devices on a floor/area</td></tr>
+            <tr><td>Rack Units (U)</td><td>1U = 1.75 inches; standard racks typically 42U tall</td></tr>
+            <tr><td>Port-side Exhaust</td><td>Hot air exits from the port side; faces hot aisle</td></tr>
+            <tr><td>Port-side Intake</td><td>Cool air enters from port side; ports face cold aisle</td></tr>
+            <tr><td>Patch Panel</td><td>Copper cable management device with multiple ports</td></tr>
+            <tr><td>Fiber Distribution Panel</td><td>Termination and management point for fiber-optic cables</td></tr>
+            <tr><td>UPS</td><td>Uninterruptible Power Supply – provides emergency power during outages</td></tr>
+            <tr><td>PDU</td><td>Power Distribution Unit – supplies and monitors power to multiple devices</td></tr>
+            <tr><td>Blackout</td><td>Complete power outage</td></tr>
+            <tr><td>Brownout</td><td>Partial voltage drop (not full outage)</td></tr>
+            <tr><td>HVAC</td><td>Controls temperature, humidity, and air quality in data centers</td></tr>
+            <tr><td>Fire Suppression</td><td>Gaseous/clean agent systems preferred (NOT water or foam near equipment)</td></tr>
+            <tr><td>US Voltage</td><td>110–120V (standard residential/commercial)</td></tr>
+            <tr><td>Europe Voltage</td><td>220–240V</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-function startGame() {
-  const p1name = document.getElementById('p1name').value.trim() || 'Player 1';
-  const p2name = document.getElementById('p2name').value.trim() || 'Player 2';
+  <div class="section-divider"></div>
 
-  state = {
-    players: [
-      { name: p1name, avatar: setupChoice.av1, pos: 0 },
-      { name: p2name, avatar: setupChoice.av2, pos: 0 }
-    ],
-    currentPlayer: 0,
-    rolling: false,
-    gameOver: false,
-    lastRoll: 1
-  };
+  <!-- ============================
+       DOMAIN 3
+  ============================= -->
+  <div class="section d3" id="d3">
+    <div class="domain-header">
+      <span class="domain-num">DOMAIN 3</span>
+      <h2 class="domain-title">Network Operations</h2>
+      <span class="domain-pct">19% of Exam</span>
+    </div>
 
-  logList.innerHTML = '';
-  rollBtn.disabled = false;
-  showDice(1);
-  document.getElementById('setupModal').classList.remove('show');
-  renderPlayersBar();
-  requestAnimationFrame(drawBoard);
-  setTimeout(() => {
-    const p = state.players[0];
-    showToast(`${p.avatar} ${p.name} goes first!`);
-  }, 300);
-}
+    <!-- 3.1 Documentation -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">3.1</span> Organizational Processes & Documentation</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Document Type</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Physical Diagram</td><td>Shows physical hardware, cables, and their connections</td></tr>
+            <tr><td>Logical Diagram</td><td>Shows IP addressing, VLANs, routing, and traffic flow (no physical detail)</td></tr>
+            <tr><td>Layer 1 Diagram</td><td>Physical connections: cabling and hardware</td></tr>
+            <tr><td>Layer 2 Diagram</td><td>MAC addresses, switches, and network topology</td></tr>
+            <tr><td>Layer 3 Diagram</td><td>IP addressing, routing protocols, logical subnets</td></tr>
+            <tr><td>Rack Diagram</td><td>Shows physical placement of equipment in server racks</td></tr>
+            <tr><td>Cable Maps/Diagrams</td><td>Physical paths and connections between network components</td></tr>
+            <tr><td>IPAM</td><td>IP Address Management – tools to plan, track, and manage IP addresses</td></tr>
+            <tr><td>Asset Inventory</td><td>Records of hardware, software, licenses, and warranties</td></tr>
+            <tr><td>SLA</td><td>Service Level Agreement – defines service quality/availability requirements between provider and user</td></tr>
+            <tr><td>Wireless Heat Map</td><td>Visual representation of wireless signal coverage/strength</td></tr>
+            <tr><td>EOL</td><td>End of Life – product no longer manufactured or sold</td></tr>
+            <tr><td>EOS</td><td>End of Support – no more patches, bug fixes, or technical assistance</td></tr>
+            <tr><td>Golden Configuration</td><td>Optimized, pre-approved ideal configuration baseline</td></tr>
+            <tr><td>Decommissioning</td><td>Formal process of removing/retiring hardware or software</td></tr>
+            <tr><td>Change Management</td><td>Formal process for tracking and approving network changes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-function resetGame() {
-  state.players.forEach(p => p.pos = 0);
-  state.currentPlayer = 0;
-  state.rolling = false;
-  state.gameOver = false;
-  state.lastRoll = 1;
-  logList.innerHTML = '';
-  rollBtn.disabled = false;
-  showDice(1);
-  document.getElementById('winModal').classList.remove('show');
-  renderPlayersBar();
-  drawBoard();
-  showToast(`${state.players[0].avatar} ${state.players[0].name} goes first!`);
-}
+    <!-- 3.2 Monitoring -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">3.2</span> Network Monitoring Technologies</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>SNMP</td><td>Simple Network Management Protocol – UDP-based; monitors network devices</td></tr>
+            <tr><td>SNMP Agent</td><td>Software on managed device; receives requests on UDP 161</td></tr>
+            <tr><td>SNMP Manager (NMS)</td><td>Monitors devices; receives traps on UDP 162</td></tr>
+            <tr><td>MIB</td><td>Management Information Base – virtual database on device holding config/state info</td></tr>
+            <tr><td>SNMP Trap</td><td>Unsolicited alert sent from agent to manager</td></tr>
+            <tr><td>SNMPv1/v2c</td><td>Use community strings (passwords); send data <span class="highlight-r">UNENCRYPTED</span></td></tr>
+            <tr><td>SNMPv3</td><td>Adds encryption and stronger authentication; <span class="highlight-g">only version with encryption</span></td></tr>
+            <tr><td>Community String</td><td>Acts as a password in SNMPv1/v2c</td></tr>
+            <tr><td>Flow Data</td><td>Monitors network traffic patterns and usage statistics (NetFlow, sFlow)</td></tr>
+            <tr><td>Packet Capture</td><td>Captures and inspects actual packet contents (Wireshark, tcpdump)</td></tr>
+            <tr><td>Protocol Analyzer</td><td>Tool that captures and inspects network traffic (Wireshark, packet sniffer)</td></tr>
+            <tr><td>Syslog</td><td>Protocol for sending log/event messages (UDP 514); Syslog collector aggregates them</td></tr>
+            <tr><td>SIEM</td><td>Security Info and Event Management – collects, aggregates, analyzes log data; detects anomalies</td></tr>
+            <tr><td>API Integration</td><td>Automated communication and data exchange between monitoring systems</td></tr>
+            <tr><td>Port Mirroring</td><td>Copies traffic from ports to a monitoring port (SPAN) for analysis</td></tr>
+            <tr><td>Baseline Metrics</td><td>Standard performance measurements under normal conditions; used to detect anomalies</td></tr>
+            <tr><td>Nmap</td><td>Network discovery tool; identifies hosts, services, and topology</td></tr>
+            <tr><td>ICMP</td><td>Used to send echo requests (ping) to confirm device availability</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-// ─── Events ─────────────────────────────────────────────────
-rollBtn.addEventListener('click', roll);
-diceEl.addEventListener('click', roll);
+    <!-- 3.3 DR -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">3.3</span> Disaster Recovery Concepts</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>RPO</td><td>Recovery Point Objective – max acceptable data loss; how far back can you restore?</td></tr>
+            <tr><td>RTO</td><td>Recovery Time Objective – max allowable time to restore business functions after disaster</td></tr>
+            <tr><td>MTTR</td><td>Mean Time To Repair – average time to repair a failed component</td></tr>
+            <tr><td>MTBF</td><td>Mean Time Between Failures – <span class="highlight-g">higher MTBF = MORE reliable</span> (fails less often)</td></tr>
+            <tr><td>Cold Site</td><td>Physical space only; no equipment; cheapest; slowest recovery</td></tr>
+            <tr><td>Warm Site</td><td>Has some hardware/software; partial data backups; needs configuration before use</td></tr>
+            <tr><td>Hot Site</td><td>Fully equipped and operational; ready to take over immediately; fastest; most expensive</td></tr>
+            <tr><td>Active-Active</td><td>All nodes handle traffic simultaneously; no single point of failure; complex/costly</td></tr>
+            <tr><td>Active-Passive</td><td>One node active, backup passive; simpler/cheaper; brief failover delay</td></tr>
+            <tr><td>Tabletop Exercise</td><td>Discussion-based DR simulation in a controlled environment</td></tr>
+            <tr><td>Validation Test</td><td>Hands-on execution of actual recovery processes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-document.getElementById('startBtn').addEventListener('click', startGame);
-document.getElementById('restartBtn').addEventListener('click', () => {
-  if (!state.players.length) return;
-  if (confirm('Restart the game?')) resetGame();
-});
+    <!-- 3.4 DHCP & DNS -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">3.4</span> IPv4/IPv6 Network Services – DHCP & DNS</div>
+      <div class="subsection-body">
+        <h3>DHCP</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td>Scope</td><td>Pool of IP addresses DHCP server can assign to clients</td></tr>
+            <tr><td>Reservation</td><td>Permanent IP assignment based on MAC address</td></tr>
+            <tr><td>Lease</td><td>Duration a client can use an assigned IP address</td></tr>
+            <tr><td>Options</td><td>Additional settings provided with IP (gateway, DNS, subnet mask)</td></tr>
+            <tr><td>Relay Agent / IP Helper</td><td>Allows DHCP server to assign IPs across multiple subnets</td></tr>
+            <tr><td>Exclusions</td><td>IP addresses removed from pool (reserved for static devices)</td></tr>
+            <tr><td>SLAAC</td><td>Stateless Address Autoconfiguration – IPv6 auto-config without DHCP</td></tr>
+            <tr><td>APIPA Symptom</td><td>Device gets 169.254.x.x address = DHCP scope exhausted or server unreachable</td></tr>
+          </tbody>
+        </table>
+        <h3>DNS Record Types</h3>
+        <table>
+          <thead><tr><th>Record / Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>Maps hostname → IPv4 address (32-bit)</td></tr>
+            <tr><td>AAAA</td><td>Maps hostname → IPv6 address (128-bit)</td></tr>
+            <tr><td>CNAME</td><td>Canonical Name – alias for another hostname (multiple names to same IP)</td></tr>
+            <tr><td>MX</td><td>Mail Exchange – points to mail server for a domain</td></tr>
+            <tr><td>TXT</td><td>Text record – used for email security (SPF, DKIM, DMARC); not used for traffic routing</td></tr>
+            <tr><td>NS</td><td>Nameserver – specifies authoritative DNS servers for a domain</td></tr>
+            <tr><td>PTR</td><td>Pointer – reverse lookup; maps IP address → hostname (opposite of A/AAAA)</td></tr>
+            <tr><td>SOA</td><td>Start of Authority – administrative info about a DNS zone</td></tr>
+            <tr><td>DNSSEC</td><td>DNS Security Extensions – ensures integrity and authenticity of DNS data</td></tr>
+            <tr><td>DoH</td><td>DNS over HTTPS – hides DNS queries in regular HTTPS web traffic (port 443)</td></tr>
+            <tr><td>DoT</td><td>DNS over TLS – encrypts DNS queries using dedicated TLS connection (port 853)</td></tr>
+            <tr><td>Forward Zone</td><td>Maps hostnames to IP addresses</td></tr>
+            <tr><td>Reverse Zone</td><td>Maps IP addresses to hostnames (uses PTR records)</td></tr>
+            <tr><td>Authoritative DNS</td><td>Holds original records for a domain (Primary or Secondary)</td></tr>
+            <tr><td>Non-Authoritative</td><td>Responds using cached or forwarded data</td></tr>
+            <tr><td>Recursive Lookup</td><td>DNS server contacts multiple servers on client behalf to fully resolve</td></tr>
+            <tr><td>Hosts File</td><td>Local file on machine; overrides DNS for name resolution</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-document.getElementById('playAgainBtn').addEventListener('click', resetGame);
-document.getElementById('newGameBtn').addEventListener('click', () => {
-  document.getElementById('winModal').classList.remove('show');
-  document.getElementById('setupModal').classList.add('show');
-});
-document.getElementById('infoBtn').addEventListener('click', () => {
-  document.getElementById('infoModal').classList.add('show');
-});
-document.getElementById('closeInfoBtn').addEventListener('click', () => {
-  document.getElementById('infoModal').classList.remove('show');
-});
+    <!-- 3.5 Access & Management -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">3.5</span> Network Access & Management Methods</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Method / Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Site-to-Site VPN</td><td>Encrypted tunnel connecting two networks (e.g., two office sites)</td></tr>
+            <tr><td>Client-to-Site VPN</td><td>Individual user connects securely to a remote network (remote access VPN)</td></tr>
+            <tr><td>Clientless VPN</td><td>VPN access through a web browser (HTTPS); no client software needed</td></tr>
+            <tr><td>Split Tunnel</td><td>Only certain traffic goes through VPN; rest uses public internet (saves bandwidth)</td></tr>
+            <tr><td>Full Tunnel</td><td>All traffic routed through VPN</td></tr>
+            <tr><td>SSH</td><td>Secure Shell – encrypted command-line remote access (port 22); replaces Telnet</td></tr>
+            <tr><td>RDP</td><td>Remote Desktop Protocol – GUI-based remote access (port 3389); Windows</td></tr>
+            <tr><td>API</td><td>Application Programming Interface – automated communication between systems</td></tr>
+            <tr><td>Console Access</td><td>Physical port connection for direct device management; used when network is down</td></tr>
+            <tr><td>Jump Box/Host</td><td>Dedicated intermediary system for secure access to devices in protected segments</td></tr>
+            <tr><td>In-Band Management</td><td>Managing devices through the same network used for data (SSH, HTTPS, RDP, SNMP)</td></tr>
+            <tr><td>Out-of-Band Management</td><td>Separate management network; works even when main network is down (console port)</td></tr>
+            <tr><td>NTP</td><td>Network Time Protocol – synchronizes clocks over network</td></tr>
+            <tr><td>PTP</td><td>Precision Time Protocol – nanosecond precision; financial/industrial systems</td></tr>
+            <tr><td>NTS</td><td>Network Time Security – protects time synchronization data from attacks</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-// ─── Init ───────────────────────────────────────────────────
-initAvatarPicker('av1pick', 'av1', '🔴');
-initAvatarPicker('av2pick', 'av2', '🔵');
-showDice(1);
+  <div class="section-divider"></div>
 
-// Draw blank board on load
-window.addEventListener('load', () => {
-  state = { players: [], currentPlayer: 0, rolling: false, gameOver: false, lastRoll: 1 };
-  requestAnimationFrame(drawBoard);
-});
+  <!-- ============================
+       DOMAIN 4
+  ============================= -->
+  <div class="section d4" id="d4">
+    <div class="domain-header">
+      <span class="domain-num">DOMAIN 4</span>
+      <h2 class="domain-title">Network Security</h2>
+      <span class="domain-pct">14% of Exam</span>
+    </div>
 
-window.addEventListener('resize', () => {
-  if (state.players.length) drawBoard();
-});
-</script>
+    <!-- 4.1 Basic Concepts -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">4.1</span> Basic Network Security Concepts</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>CIA Triad</td><td><span class="highlight">Confidentiality, Integrity, Availability</span> – core principles of information security</td></tr>
+            <tr><td>PKI</td><td>Public Key Infrastructure – hierarchical system for creating/managing digital certificates</td></tr>
+            <tr><td>Self-Signed Cert</td><td>Not trusted by browsers by default; used in internal/dev environments; no 3rd-party CA</td></tr>
+            <tr><td>IAM</td><td>Identity and Access Management – framework for controlling access to digital resources</td></tr>
+            <tr><td>MFA</td><td>Multifactor Authentication – requires 2+ categories (know/have/are/somewhere)</td></tr>
+            <tr><td>SSO</td><td>Single Sign-On – one login grants access to multiple connected systems</td></tr>
+            <tr><td>RADIUS</td><td>Remote Authentication Dial-In User Service – centralized AAA for remote access users</td></tr>
+            <tr><td>LDAP</td><td>Lightweight Directory Access Protocol – manages user accounts, groups, devices</td></tr>
+            <tr><td>SAML</td><td>Security Assertion Markup Language – exchanges authentication/authorization data</td></tr>
+            <tr><td>TACACS+</td><td>AAA protocol primarily for managing access to network devices (Cisco)</td></tr>
+            <tr><td>TOTP</td><td>Time-Based One-Time Password – generates OTP based on current time + secret key</td></tr>
+            <tr><td>Least Privilege</td><td>Users get minimum access needed for their responsibilities</td></tr>
+            <tr><td>RBAC</td><td>Role-Based Access Control – permissions tied to roles/job functions</td></tr>
+            <tr><td>Geofencing</td><td>Controls device usage based on geographic location</td></tr>
+            <tr><td>Honeypot</td><td>Decoy system mimicking real systems; attracts attackers; monitors for threats</td></tr>
+            <tr><td>Honeynet</td><td>Network of multiple honeypots</td></tr>
+            <tr><td>PCI DSS</td><td>Payment Card Industry Data Security Standards – protects credit cardholder data</td></tr>
+            <tr><td>GDPR</td><td>General Data Protection Regulation – governs privacy of EU citizens personal data</td></tr>
+            <tr><td>IoT</td><td>Internet of Things – interconnected devices with sensors</td></tr>
+            <tr><td>IIoT</td><td>Industrial IoT – IoT for industrial applications</td></tr>
+            <tr><td>SCADA</td><td>Supervisory Control and Data Acquisition – specific type of ICS</td></tr>
+            <tr><td>ICS</td><td>Industrial Control System – control/automation systems in industrial settings</td></tr>
+            <tr><td>OT</td><td>Operational Technology – hardware/software monitoring/controlling physical industrial processes</td></tr>
+            <tr><td>BYOD</td><td>Bring Your Own Device – employees use personal devices for work</td></tr>
+            <tr><td>Screened Subnet</td><td>Semi-trusted zone (DMZ) between trusted internal and untrusted external networks</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4.2 Attacks -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">4.2</span> Network Attack Types</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Attack</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>DoS</td><td>Denial of Service – overwhelms target from a single source</td></tr>
+            <tr><td>DDoS</td><td>Distributed DoS – multiple compromised systems flood target; harder to defend</td></tr>
+            <tr><td>VLAN Hopping</td><td>Bypasses VLAN segmentation using unauthorized VLAN tags</td></tr>
+            <tr><td>MAC Flooding</td><td>Overwhelms switch CAM table with fake MACs; causes switch to broadcast all traffic</td></tr>
+            <tr><td>ARP Spoofing</td><td>Attacker sends fake ARP packets to associate their MAC with a legitimate IP</td></tr>
+            <tr><td>ARP Poisoning</td><td>Device ARP cache contains incorrect IP-to-MAC mappings</td></tr>
+            <tr><td>DNS Poisoning</td><td>Remaps domain names to rogue IPs in a DNS resolver cache</td></tr>
+            <tr><td>DNS Spoofing</td><td>Attacker intercepts DNS query and responds with forged record</td></tr>
+            <tr><td>Rogue DHCP</td><td>Unauthorized DHCP server causes IP conflicts, wrong gateway/DNS settings</td></tr>
+            <tr><td>Evil Twin</td><td>Rogue AP with same SSID as legitimate AP; used for eavesdropping</td></tr>
+            <tr><td>On-Path Attack</td><td>Attacker intercepts and modifies traffic between two parties (MITM)</td></tr>
+            <tr><td>Phishing</td><td>Social engineering: disguised as legitimate to steal credentials/info</td></tr>
+            <tr><td>Dumpster Diving</td><td>Searching trash for sensitive discarded documents or media</td></tr>
+            <tr><td>Shoulder Surfing</td><td>Observing screen/keyboard to steal info; countered by privacy filters</td></tr>
+            <tr><td>Tailgating</td><td>Following authorized person into a restricted area without permission</td></tr>
+            <tr><td>Malware</td><td>Harmful programs: viruses, worms, ransomware, trojans</td></tr>
+            <tr><td>Worm</td><td>Self-propagating malware that spreads across networks without user action</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4.3 Defense -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">4.3</span> Network Security Defense Techniques</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Technique</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Device Hardening</td><td>Disable unused ports/services; change default passwords; apply firmware updates</td></tr>
+            <tr><td>NAC</td><td>Network Access Control – controls which devices can join network (port security, 802.1X, MAC filtering)</td></tr>
+            <tr><td>802.1X</td><td>IEEE standard – switch acts as authenticator; requires RADIUS server; used for port security</td></tr>
+            <tr><td>Port Security</td><td>Limits which MAC addresses can connect to a switch port</td></tr>
+            <tr><td>MAC Filtering</td><td>Network access based on 48-bit hardware address</td></tr>
+            <tr><td>ACL</td><td>Access Control List – rule-based traffic filtering; <span class="highlight-r">implicit deny at end</span></td></tr>
+            <tr><td>URL Filtering</td><td>Blocks/allows access to websites based on URL</td></tr>
+            <tr><td>Content Filtering</td><td>Inspects data streams for keywords, file types, or patterns</td></tr>
+            <tr><td>UTM</td><td>Unified Threat Management – single device providing multiple security services</td></tr>
+            <tr><td>Trusted Zone</td><td>Private/internal network (LAN, intranet)</td></tr>
+            <tr><td>Untrusted Zone</td><td>Public networks (Internet, guest Wi-Fi)</td></tr>
+            <tr><td>Screened Subnet</td><td>Buffer zone (DMZ) with publicly accessible servers outside main firewall</td></tr>
+            <tr><td>Data in Transit</td><td>Protect with VPN, IPSec, TLS</td></tr>
+            <tr><td>Data at Rest</td><td>Protect with encryption (archived files, DB records, backup files)</td></tr>
+            <tr><td>Key Management</td><td>Secure handling of encryption keys</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================
+       DOMAIN 5
+  ============================= -->
+  <div class="section d5" id="d5">
+    <div class="domain-header">
+      <span class="domain-num">DOMAIN 5</span>
+      <h2 class="domain-title">Network Troubleshooting</h2>
+      <span class="domain-pct">24% of Exam</span>
+    </div>
+
+    <!-- 5.1 Methodology -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">5.1</span> Troubleshooting Methodology</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Step</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Step 1</td><td>Identify the problem – gather info, question users, identify symptoms, check for changes, duplicate issue</td></tr>
+            <tr><td>Step 2</td><td>Establish a theory of probable cause – question the obvious; consider top-to-bottom or bottom-to-top OSI</td></tr>
+            <tr><td>Step 3</td><td>Test the theory – confirm or deny; if wrong, establish new theory or escalate</td></tr>
+            <tr><td>Step 4</td><td>Establish a plan of action – resolve problem and identify potential effects</td></tr>
+            <tr><td>Step 5</td><td>Implement the solution or escalate as necessary</td></tr>
+            <tr><td>Step 6</td><td>Verify full system functionality and implement preventive measures</td></tr>
+            <tr><td>Step 7</td><td>Document findings, actions, outcomes, and lessons learned</td></tr>
+          </tbody>
+        </table>
+        <div class="tip">
+          <strong>Exam Tip – OSI Approach</strong>
+          Top-to-bottom (Layer 7 down) = suspected application/software issue. Bottom-to-top (Layer 1 up) = suspected hardware/physical issue. Divide and conquer = start at a middle layer (e.g., Layer 3) and work outward.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5.2/5.3 Cable Issues -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">5.2 & 5.3</span> Cable Issues & Network Service Problems</div>
+      <div class="subsection-body">
+        <table>
+          <thead><tr><th>Issue</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Incorrect Cable</td><td>Wrong type: single-mode vs multimode, Cat 5 in GbE → replace with Cat 5e+</td></tr>
+            <tr><td>Attenuation</td><td>Signal loss over distance; solved by repeaters/switches, not transceivers alone</td></tr>
+            <tr><td>Crosstalk</td><td>Interference between adjacent wire pairs; STP cable reduces this</td></tr>
+            <tr><td>EMI/RFI</td><td>External electromagnetic interference; fiber immune; STP reduces; UTP most susceptible</td></tr>
+            <tr><td>Improper Termination</td><td>Wrong pinouts; use cable tester to diagnose</td></tr>
+            <tr><td>TX/RX Transposed</td><td>Wrong TIA/EIA standard or wrong pin assignments; use crossover or check MDI-X</td></tr>
+            <tr><td>Auto MDI-X</td><td>Interface automatically detects and configures connection type (straight-through vs crossover)</td></tr>
+            <tr><td>CRC Errors</td><td>Cyclic Redundancy Check failures = transmission errors; often bad cable or NIC</td></tr>
+            <tr><td>Runts</td><td>Ethernet frames smaller than 64 bytes; caused by collisions or faulty devices</td></tr>
+            <tr><td>Giants</td><td>Frames exceeding 1518 bytes; caused by misconfigured MTU or faulty equipment</td></tr>
+            <tr><td>Packet Drops</td><td>Lost packets due to congestion, buffer overflow, or network issues</td></tr>
+            <tr><td>Error Disabled</td><td>Port shut down by switch due to errors, security violations, or config issues</td></tr>
+            <tr><td>Administratively Down</td><td>Port manually shut down for maintenance or policy</td></tr>
+            <tr><td>Suspended</td><td>Port temporarily inactive due to network conditions or security policies</td></tr>
+          </tbody>
+        </table>
+        <h3>Network Service Problems</h3>
+        <table>
+          <thead><tr><th>Issue</th><th>Cause / Solution</th></tr></thead>
+          <tbody>
+            <tr><td>Network Loop</td><td>Multiple active paths causing endless packet circulation; prevented by STP/RSTP</td></tr>
+            <tr><td>Incorrect VLAN</td><td>Devices on same switch cannot communicate if on different VLANs</td></tr>
+            <tr><td>ACL Misconfiguration</td><td>Implicit deny may block legitimate traffic; ACL evaluated top-down</td></tr>
+            <tr><td>Wrong Default Gateway</td><td>Device can reach local LAN but not external networks</td></tr>
+            <tr><td>Wrong Subnet Mask</td><td>Device may think other hosts are on different network; causes local comm failure</td></tr>
+            <tr><td>Duplicate IP</td><td>Two devices share same IP; caused by static assignment errors or rogue DHCP</td></tr>
+            <tr><td>DHCP Exhaustion</td><td>No more IPs to assign; devices get APIPA address (169.254.x.x)</td></tr>
+            <tr><td>Routing Loop</td><td>Packets circulate between routers; mitigated by route poisoning, split horizon, TTL</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5.4/5.5 Performance & Tools -->
+    <div class="subsection">
+      <div class="subsection-header"><span class="sub-id">5.4 & 5.5</span> Performance Issues & Troubleshooting Tools</div>
+      <div class="subsection-body">
+        <h3>Performance Issues</h3>
+        <table>
+          <thead><tr><th>Issue</th><th>Solution / Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Congestion/Contention</td><td>Too many devices competing for bandwidth; use QoS</td></tr>
+            <tr><td>Bottlenecking</td><td>Single component limits overall performance; fix with hardware/software upgrades</td></tr>
+            <tr><td>Latency</td><td>Delay in data delivery; CDN reduces latency for geographically distant users</td></tr>
+            <tr><td>Jitter</td><td>Variable delay (especially VoIP quality); use QoS to prioritize voice traffic</td></tr>
+            <tr><td>Packet Loss</td><td>Detected with ping, tracert, traceroute</td></tr>
+            <tr><td>Channel Overlap</td><td>2.4 GHz: use channels 1, 6, 11 (non-overlapping); increasing width = more throughput but more interference</td></tr>
+            <tr><td>Wireless Signal Loss</td><td>Do NOT switch to lower frequency; check AP placement, obstructions</td></tr>
+            <tr><td>Roaming Issues</td><td>Ensure all APs broadcast same SSID, use identical encryption, adequate overlap</td></tr>
+            <tr><td>Client Disassociation</td><td>Use security features preventing deauthentication attacks</td></tr>
+          </tbody>
+        </table>
+        <h3>Software Tools (CLI Commands)</h3>
+        <table>
+          <thead><tr><th>Tool</th><th>Function</th></tr></thead>
+          <tbody>
+            <tr><td>ping</td><td>Tests reachability; detects packet loss; sends ICMP echo requests</td></tr>
+            <tr><td>traceroute (Linux)</td><td>Displays hops between source and destination (IPv4)</td></tr>
+            <tr><td>tracert (Windows)</td><td>Same as traceroute but for Windows</td></tr>
+            <tr><td>nslookup</td><td>Troubleshoots DNS issues on Windows</td></tr>
+            <tr><td>dig</td><td>DNS query tool on Linux/macOS</td></tr>
+            <tr><td>tcpdump</td><td>Command-line packet capture utility (Linux)</td></tr>
+            <tr><td>netstat -a</td><td>Displays all active TCP connections and listening ports</td></tr>
+            <tr><td>netstat -b</td><td>Shows application names accessing the network (Windows)</td></tr>
+            <tr><td>ipconfig /all</td><td>Full TCP/IP config for all adapters (Windows)</td></tr>
+            <tr><td>ipconfig /release</td><td>Releases DHCP-assigned IP address (Windows)</td></tr>
+            <tr><td>ipconfig /renew</td><td>Renews DHCP-assigned IP address (Windows)</td></tr>
+            <tr><td>ifconfig</td><td>Displays TCP/IP settings on Linux (older; replaced by ip command)</td></tr>
+            <tr><td>ip</td><td>Modern Linux replacement for ifconfig</td></tr>
+            <tr><td>arp -a</td><td>Displays ARP cache (IP-to-MAC mapping table)</td></tr>
+            <tr><td>Nmap</td><td>Network discovery; identifies hosts, services, open ports, topology</td></tr>
+            <tr><td>Wireshark</td><td>GUI protocol analyzer; captures and inspects packets</td></tr>
+          </tbody>
+        </table>
+        <h3>Switch/Router Show Commands</h3>
+        <table>
+          <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>show mac-address-table</td><td>Displays MAC-to-port mapping table on a switch</td></tr>
+            <tr><td>show route</td><td>Displays routing table on router or Layer 3 switch</td></tr>
+            <tr><td>show interface</td><td>Status and performance of network interfaces (up/down, errors, stats)</td></tr>
+            <tr><td>show config</td><td>Current device configuration (interfaces, routing, VLANs, settings)</td></tr>
+            <tr><td>show arp</td><td>Displays ARP table (IP-to-MAC mappings)</td></tr>
+            <tr><td>show vlan</td><td>VLAN configuration (IDs, names, port assignments)</td></tr>
+            <tr><td>show power</td><td>PoE power information; useful for troubleshooting PoE issues</td></tr>
+          </tbody>
+        </table>
+        <h3>Hardware Tools</h3>
+        <table>
+          <thead><tr><th>Tool</th><th>Function</th></tr></thead>
+          <tbody>
+            <tr><td>Cable Tester</td><td>Verifies cable integrity and connectivity; detects incorrect pinouts</td></tr>
+            <tr><td>Toner & Probe Kit</td><td>Traces and identifies individual wires within a cable bundle</td></tr>
+            <tr><td>Optical Power Meter</td><td>Tests signal strength in fiber-optic links</td></tr>
+            <tr><td>PoE Tester</td><td>Verifies PoE compatibility between switch and connected devices</td></tr>
+            <tr><td>Network Tap</td><td>Passive monitoring device; captures traffic without interrupting flow</td></tr>
+            <tr><td>Wi-Fi Analyzer</td><td>Detects Wi-Fi networks, signal strength, channel usage, interference</td></tr>
+            <tr><td>Network Heat Map</td><td>Visual map of wireless signal coverage (identifies weak areas)</td></tr>
+            <tr><td>Visual Fault Locator</td><td>Locates faults in fiber-optic cables using visible red laser light</td></tr>
+            <tr><td>Speed Tester</td><td>Measures bandwidth (upload/download speed) and latency</td></tr>
+            <tr><td>LLDP</td><td>Link Layer Discovery Protocol – vendor-neutral; devices advertise identity to neighbors</td></tr>
+            <tr><td>CDP</td><td>Cisco Discovery Protocol – Cisco-proprietary; shares device info between Cisco devices</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================
+       PRACTICE Q&A
+  ============================= -->
+  <div class="section" id="qa">
+    <div class="domain-header" style="border-bottom-color:var(--border)">
+      <span class="domain-num" style="background:rgba(0,212,255,0.1);color:var(--accent);border-color:rgba(0,212,255,0.3)">Q&A</span>
+      <h2 class="domain-title">Practice Questions</h2>
+      <span class="domain-pct" style="font-size:12px;color:var(--text-muted)">Click to reveal answers</span>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">OSI Model</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What PDU is used at Layer 4 (TCP)?</div><div class="qa-a">Segment</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What PDU is used at Layer 4 (UDP)?</div><div class="qa-a">Datagram</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What PDU is used at Layer 2?</div><div class="qa-a">Frame</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What PDU is used at Layer 3?</div><div class="qa-a">Packet</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What PDU is used at Layer 1?</div><div class="qa-a">Bit</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What layers use "data" as the PDU?</div><div class="qa-a">Layers 5, 6, and 7 (Session, Presentation, Application)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What device operates at Layer 1?</div><div class="qa-a">Hub, repeater, network cabling, modem</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What device operates at Layer 2?</div><div class="qa-a">Switch, bridge, NIC, wireless access point</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What device operates at Layer 3?</div><div class="qa-a">Router, Layer 3 switch (multilayer switch)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Where does encryption/decryption happen in OSI?</div><div class="qa-a">Layer 6 (Presentation Layer)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Where are sessions opened/closed?</div><div class="qa-a">Layer 5 (Session Layer)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>ARP operates at which OSI layer?</div><div class="qa-a">Layer 2 (Data Link)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">Routing & Switching</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What protocol prevents switching loops?</div><div class="qa-a">STP (Spanning Tree Protocol) and RSTP (Rapid STP)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>In STP, which switch becomes root bridge?</div><div class="qa-a">The switch with the LOWEST Bridge ID (priority + MAC address)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is a blocked port in STP?</div><div class="qa-a">A port that does not forward traffic to prevent loops; listens to BPDUs only</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which routing protocol is distance-vector?</div><div class="qa-a">RIP (Routing Information Protocol)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which routing protocols are link-state?</div><div class="qa-a">OSPF and IS-IS</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which is a hybrid routing protocol?</div><div class="qa-a">EIGRP</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which protocol is used for Internet routing between ASs?</div><div class="qa-a">BGP (Border Gateway Protocol) – path-vector, EGP</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Lower administrative distance means?</div><div class="qa-a">More preferred route (lower AD = more trusted)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>More specific prefix (/28 vs /24) means?</div><div class="qa-a">Longer prefix (/28) is more specific and preferred</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What allows multiple devices to share one public IP?</div><div class="qa-a">PAT (Port Address Translation) – a form of NAT</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What does FHRP provide?</div><div class="qa-a">Virtual IP shared among redundant routers for gateway failover</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What handles inter-VLAN routing on a switch?</div><div class="qa-a">SVI (Switch Virtual Interface)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What protocol enables link aggregation?</div><div class="qa-a">LACP (Link Aggregation Control Protocol)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">Security</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>IDS vs IPS: key difference?</div><div class="qa-a">IDS detects and alerts (passive). IPS detects and BLOCKS (active, inline).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is ARP spoofing?</div><div class="qa-a">Attacker sends fake ARP packets to associate their MAC with a legitimate IP address.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is MAC flooding?</div><div class="qa-a">Overwhelms switch CAM table with fake MACs, causing switch to broadcast all traffic.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is an evil twin attack?</div><div class="qa-a">Rogue AP with same SSID as legitimate AP, used to intercept wireless traffic.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What does 802.1X do?</div><div class="qa-a">Port-based network access control; switch acts as authenticator with a RADIUS server.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is the principle of least privilege?</div><div class="qa-a">Users get only the minimum access needed for their job responsibilities.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>WPA2 vs WPA3: key difference?</div><div class="qa-a">WPA3 uses SAE (Simultaneous Authentication of Equals) instead of PSK; stronger.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is a screened subnet (DMZ)?</div><div class="qa-a">Buffer zone between trusted internal network and untrusted Internet with public-facing servers.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is RADIUS used for?</div><div class="qa-a">Centralized AAA (Authentication, Authorization, Accounting) for remote access users.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is TACACS+ used for?</div><div class="qa-a">AAA protocol primarily for managing access to network devices (routers, switches).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What does the CIA triad stand for?</div><div class="qa-a">Confidentiality, Integrity, Availability – the three core principles of information security.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>ACL last rule behavior?</div><div class="qa-a">Implicit deny any – traffic not matching any rule is automatically blocked.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">Wireless</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which Wi-Fi standard supports 2.4 AND 5 AND 6 GHz?</div><div class="qa-a">802.11ax (Wi-Fi 6/6E)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which frequency has best range but most interference?</div><div class="qa-a">2.4 GHz</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Non-overlapping channels in 2.4 GHz?</div><div class="qa-a">Channels 1, 6, and 11</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What does band steering do?</div><div class="qa-a">Guides dual-band capable devices to the best available frequency band.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>802.11h is for?</div><div class="qa-a">Spectrum and power management in 5 GHz band (DFS/TPC)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Captive portal purpose?</div><div class="qa-a">Restricts network access until user completes a required action (login, accept terms).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is an ESSID?</div><div class="qa-a">SSID of an ESS (multiple APs with same SSID for seamless roaming).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>WPS should be?</div><div class="qa-a">Disabled – it is a known security risk.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Strongest Wi-Fi encryption available?</div><div class="qa-a">WPA3 (specifically WPA3-SAE for personal networks)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">Cabling & Physical</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Minimum cable for Gigabit Ethernet?</div><div class="qa-a">Cat 5e</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Minimum cable for 10 Gbps (limited range)?</div><div class="qa-a">Cat 6 (supports 10GBASE-T up to 55m)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which cabling type is immune to EMI/RFI?</div><div class="qa-a">Fiber optic</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which cable for long-distance building-to-building links?</div><div class="qa-a">Single-mode fiber (can span miles)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which cable uses laser technology?</div><div class="qa-a">Single-mode fiber</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Which cable uses LED technology?</div><div class="qa-a">Multimode fiber</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What does plenum-rated cable provide?</div><div class="qa-a">Fire-retardant jacket (PVC/FEP) required in air-handling plenum spaces</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is a DAC cable?</div><div class="qa-a">Direct Attach Copper (twinaxial) – short-range high-speed data center connections</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>MPO connector used for?</div><div class="qa-a">High-density fiber connections (up to 72 fibers); data centers and high-speed networks</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>RJ45 is used for?</div><div class="qa-a">Standard Ethernet network cabling (twisted-pair copper)</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>RJ11 is used for?</div><div class="qa-a">Telephone equipment and dial-up networking</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>BNC connector is?</div><div class="qa-a">Bayonet-style (twist-and-lock) connector used with coaxial cabling</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>F-type connector is?</div><div class="qa-a">Threaded (screw-on) connector for coaxial; cable TV and broadband modems</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>LC connector is?</div><div class="qa-a">Small form factor fiber-optic connector; most common in modern data centers</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-header">Cloud & Modern Networks</div>
+      <div class="subsection-body">
+        <div class="qa-grid">
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>SaaS vs PaaS vs IaaS?</div><div class="qa-a">SaaS = ready-to-use software (Office365). PaaS = dev platform (Heroku). IaaS = raw compute/storage (AWS EC2).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is a VPC?</div><div class="qa-a">Virtual Private Cloud – isolated private network within a public cloud environment.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Scalability vs Elasticity?</div><div class="qa-a">Scalability = planned gradual addition of resources. Elasticity = automatic real-time adjustment.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is NFV?</div><div class="qa-a">Network Functions Virtualization – replaces physical network hardware with software.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is ZTA?</div><div class="qa-a">Zero Trust Architecture – no implicit trust; continuous verification; least privilege access.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>SASE vs SSE?</div><div class="qa-a">SASE combines networking + security. SSE is security-only (subset of SASE).</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>What is IaC branching?</div><div class="qa-a">Creates separate development paths that can be merged back into main configuration.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Configuration drift means?</div><div class="qa-a">A system diverges from its expected state due to manual changes outside automation scripts.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>Direct Connect vs VPN?</div><div class="qa-a">Direct Connect = dedicated private line to cloud. VPN = encrypted tunnel over Internet.</div></div>
+          <div class="qa-item" onclick="this.classList.toggle('open')"><div class="qa-q"><span class="qa-q-icon">Q</span>NSG vs NSL?</div><div class="qa-a">NSG applies rules to individual virtual NICs (granular). NSL applies rules at subnet level (less granular).</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================
+       EXAM TIPS
+  ============================= -->
+  <div class="section" id="tips">
+    <div class="domain-header" style="border-bottom-color:var(--border)">
+      <span class="domain-num" style="background:rgba(245,158,11,0.1);color:var(--accent4);border-color:rgba(245,158,11,0.3)">TIPS</span>
+      <h2 class="domain-title">Exam Strategy & Instructor Tips</h2>
+    </div>
+    <div class="subsection">
+      <div class="subsection-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">
+          <div class="tip"><strong>Know Your Acronyms</strong>CompTIA tests acronyms extensively. If you know what IPS, IDS, PAT, FHRP stand for, you can answer quickly.</div>
+          <div class="tip"><strong>Know Port Numbers</strong>Every port in the exam objectives must be memorized. The table in objective 1.4 is the definitive list.</div>
+          <div class="tip"><strong>Master Subnetting</strong>Expect subnetting questions on /24, /25, /26, /27, /28, /30 and CIDR. Know network address, broadcast, first/last host, # of hosts.</div>
+          <div class="tip"><strong>Performance-Based Questions</strong>The exam has ~6 simulator questions (drag-and-drop, type commands, configure diagrams). These take more time – practice labs!</div>
+          <div class="tip"><strong>Study Cisco Commands</strong>The exam includes real CLI: show commands, static routes, ARP, MAC table lookups. Practice Cisco Packet Tracer.</div>
+          <div class="tip"><strong>Know OSI Layers</strong>Every device and protocol maps to an OSI layer. This is tested directly and indirectly throughout the exam.</div>
+          <div class="tip"><strong>Insecure vs Secure</strong>Know which protocols are insecure (HTTP, Telnet, FTP, SNMP v1/v2) vs secure alternatives (HTTPS, SSH, SFTP, SNMPv3).</div>
+          <div class="tip"><strong>Time Management</strong>Exam is 90 minutes for max 90 questions. Performance-based questions eat time. Flag and return if stuck.</div>
+          <div class="tip"><strong>Read Carefully</strong>Questions often contain the answer in the wording. Look for keywords like "long distance" (single-mode fiber), "prevents loops" (STP), "prioritize traffic" (QoS).</div>
+          <div class="tip"><strong>DNS Record Types</strong>Know ALL record types: A (IPv4), AAAA (IPv6), CNAME (alias), MX (mail), TXT (email security), NS (nameservers), PTR (reverse).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================
+       ACRONYMS
+  ============================= -->
+  <div class="section" id="acronyms">
+    <div class="domain-header" style="border-bottom-color:var(--border)">
+      <span class="domain-num" style="background:rgba(124,58,237,0.1);color:var(--accent2);border-color:rgba(124,58,237,0.3)">REF</span>
+      <h2 class="domain-title">Critical Acronym Reference</h2>
+    </div>
+    <div class="subsection">
+      <div class="subsection-body">
+        <div class="acronym-grid">
+          <div class="acronym-item"><span class="acronym-key">ACL</span><span class="acronym-val">Access Control List</span></div>
+          <div class="acronym-item"><span class="acronym-key">AES</span><span class="acronym-val">Advanced Encryption Standard</span></div>
+          <div class="acronym-item"><span class="acronym-key">AH</span><span class="acronym-val">Authentication Header (IPSec)</span></div>
+          <div class="acronym-item"><span class="acronym-key">AP</span><span class="acronym-val">Access Point</span></div>
+          <div class="acronym-item"><span class="acronym-key">API</span><span class="acronym-val">Application Programming Interface</span></div>
+          <div class="acronym-item"><span class="acronym-key">APIPA</span><span class="acronym-val">Automatic Private IP Addressing</span></div>
+          <div class="acronym-item"><span class="acronym-key">ARP</span><span class="acronym-val">Address Resolution Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">BGP</span><span class="acronym-val">Border Gateway Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">BNC</span><span class="acronym-val">Bayonet Neill-Concelman</span></div>
+          <div class="acronym-item"><span class="acronym-key">BPDU</span><span class="acronym-val">Bridge Protocol Data Unit</span></div>
+          <div class="acronym-item"><span class="acronym-key">BSSID</span><span class="acronym-val">Basic Service Set Identifier</span></div>
+          <div class="acronym-item"><span class="acronym-key">BYOD</span><span class="acronym-val">Bring Your Own Device</span></div>
+          <div class="acronym-item"><span class="acronym-key">CAM</span><span class="acronym-val">Content-Addressable Memory</span></div>
+          <div class="acronym-item"><span class="acronym-key">CDN</span><span class="acronym-val">Content Delivery Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">CDP</span><span class="acronym-val">Cisco Discovery Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">CIA</span><span class="acronym-val">Confidentiality, Integrity, Availability</span></div>
+          <div class="acronym-item"><span class="acronym-key">CIDR</span><span class="acronym-val">Classless Inter-Domain Routing</span></div>
+          <div class="acronym-item"><span class="acronym-key">CLI</span><span class="acronym-val">Command-Line Interface</span></div>
+          <div class="acronym-item"><span class="acronym-key">CNAME</span><span class="acronym-val">Canonical Name (DNS)</span></div>
+          <div class="acronym-item"><span class="acronym-key">DAC</span><span class="acronym-val">Direct Attach Copper</span></div>
+          <div class="acronym-item"><span class="acronym-key">DCI</span><span class="acronym-val">Data Center Interconnect</span></div>
+          <div class="acronym-item"><span class="acronym-key">DDoS</span><span class="acronym-val">Distributed Denial-of-Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">DHCP</span><span class="acronym-val">Dynamic Host Configuration Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">DLP</span><span class="acronym-val">Data Loss Prevention</span></div>
+          <div class="acronym-item"><span class="acronym-key">DNS</span><span class="acronym-val">Domain Name System</span></div>
+          <div class="acronym-item"><span class="acronym-key">DNSSEC</span><span class="acronym-val">DNS Security Extensions</span></div>
+          <div class="acronym-item"><span class="acronym-key">DoH</span><span class="acronym-val">DNS over HTTPS</span></div>
+          <div class="acronym-item"><span class="acronym-key">DoS</span><span class="acronym-val">Denial-of-Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">DoT</span><span class="acronym-val">DNS over TLS</span></div>
+          <div class="acronym-item"><span class="acronym-key">EAP</span><span class="acronym-val">Extensible Authentication Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">EIGRP</span><span class="acronym-val">Enhanced Interior Gateway Routing Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">EOL</span><span class="acronym-val">End-of-Life</span></div>
+          <div class="acronym-item"><span class="acronym-key">EOS</span><span class="acronym-val">End-of-Support</span></div>
+          <div class="acronym-item"><span class="acronym-key">ESP</span><span class="acronym-val">Encapsulating Security Payload (IPSec)</span></div>
+          <div class="acronym-item"><span class="acronym-key">ESSID</span><span class="acronym-val">Extended Service Set Identifier</span></div>
+          <div class="acronym-item"><span class="acronym-key">FC</span><span class="acronym-val">Fibre Channel</span></div>
+          <div class="acronym-item"><span class="acronym-key">FHRP</span><span class="acronym-val">First Hop Redundancy Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">FTP</span><span class="acronym-val">File Transfer Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">GDPR</span><span class="acronym-val">General Data Protection Regulation</span></div>
+          <div class="acronym-item"><span class="acronym-key">GRE</span><span class="acronym-val">Generic Routing Encapsulation</span></div>
+          <div class="acronym-item"><span class="acronym-key">GUI</span><span class="acronym-val">Graphical User Interface</span></div>
+          <div class="acronym-item"><span class="acronym-key">HTTP</span><span class="acronym-val">Hypertext Transfer Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">HTTPS</span><span class="acronym-val">HTTP Secure</span></div>
+          <div class="acronym-item"><span class="acronym-key">IaaS</span><span class="acronym-val">Infrastructure as a Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">IaC</span><span class="acronym-val">Infrastructure as Code</span></div>
+          <div class="acronym-item"><span class="acronym-key">IAM</span><span class="acronym-val">Identity and Access Management</span></div>
+          <div class="acronym-item"><span class="acronym-key">ICMP</span><span class="acronym-val">Internet Control Message Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">ICS</span><span class="acronym-val">Industrial Control System</span></div>
+          <div class="acronym-item"><span class="acronym-key">IDF</span><span class="acronym-val">Intermediate Distribution Frame</span></div>
+          <div class="acronym-item"><span class="acronym-key">IDS</span><span class="acronym-val">Intrusion Detection System</span></div>
+          <div class="acronym-item"><span class="acronym-key">IIoT</span><span class="acronym-val">Industrial Internet of Things</span></div>
+          <div class="acronym-item"><span class="acronym-key">IKE</span><span class="acronym-val">Internet Key Exchange</span></div>
+          <div class="acronym-item"><span class="acronym-key">IoT</span><span class="acronym-val">Internet of Things</span></div>
+          <div class="acronym-item"><span class="acronym-key">IPAM</span><span class="acronym-val">IP Address Management</span></div>
+          <div class="acronym-item"><span class="acronym-key">IPS</span><span class="acronym-val">Intrusion Prevention System</span></div>
+          <div class="acronym-item"><span class="acronym-key">IPSec</span><span class="acronym-val">Internet Protocol Security</span></div>
+          <div class="acronym-item"><span class="acronym-key">IS-IS</span><span class="acronym-val">Intermediate System to IS</span></div>
+          <div class="acronym-item"><span class="acronym-key">LACP</span><span class="acronym-val">Link Aggregation Control Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">LC</span><span class="acronym-val">Local Connector (fiber)</span></div>
+          <div class="acronym-item"><span class="acronym-key">LDAP</span><span class="acronym-val">Lightweight Directory Access Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">LDAPS</span><span class="acronym-val">LDAP over SSL</span></div>
+          <div class="acronym-item"><span class="acronym-key">LLDP</span><span class="acronym-val">Link Layer Discovery Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">MAC</span><span class="acronym-val">Media Access Control</span></div>
+          <div class="acronym-item"><span class="acronym-key">MDF</span><span class="acronym-val">Main Distribution Frame</span></div>
+          <div class="acronym-item"><span class="acronym-key">MFA</span><span class="acronym-val">Multifactor Authentication</span></div>
+          <div class="acronym-item"><span class="acronym-key">MIB</span><span class="acronym-val">Management Information Base</span></div>
+          <div class="acronym-item"><span class="acronym-key">MPO</span><span class="acronym-val">Multi-Fiber Push On</span></div>
+          <div class="acronym-item"><span class="acronym-key">MTBF</span><span class="acronym-val">Mean Time Between Failures</span></div>
+          <div class="acronym-item"><span class="acronym-key">MTTR</span><span class="acronym-val">Mean Time To Repair</span></div>
+          <div class="acronym-item"><span class="acronym-key">MTU</span><span class="acronym-val">Maximum Transmission Unit</span></div>
+          <div class="acronym-item"><span class="acronym-key">MX</span><span class="acronym-val">Mail Exchange (DNS)</span></div>
+          <div class="acronym-item"><span class="acronym-key">NAC</span><span class="acronym-val">Network Access Control</span></div>
+          <div class="acronym-item"><span class="acronym-key">NAS</span><span class="acronym-val">Network-Attached Storage</span></div>
+          <div class="acronym-item"><span class="acronym-key">NAT</span><span class="acronym-val">Network Address Translation</span></div>
+          <div class="acronym-item"><span class="acronym-key">NFV</span><span class="acronym-val">Network Functions Virtualization</span></div>
+          <div class="acronym-item"><span class="acronym-key">NIC</span><span class="acronym-val">Network Interface Card</span></div>
+          <div class="acronym-item"><span class="acronym-key">NS</span><span class="acronym-val">Name Server (DNS)</span></div>
+          <div class="acronym-item"><span class="acronym-key">NTP</span><span class="acronym-val">Network Time Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">NTS</span><span class="acronym-val">Network Time Security</span></div>
+          <div class="acronym-item"><span class="acronym-key">OT</span><span class="acronym-val">Operational Technology</span></div>
+          <div class="acronym-item"><span class="acronym-key">OSPF</span><span class="acronym-val">Open Shortest Path First</span></div>
+          <div class="acronym-item"><span class="acronym-key">OSI</span><span class="acronym-val">Open Systems Interconnection</span></div>
+          <div class="acronym-item"><span class="acronym-key">PaaS</span><span class="acronym-val">Platform as a Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">PAT</span><span class="acronym-val">Port Address Translation</span></div>
+          <div class="acronym-item"><span class="acronym-key">PCI DSS</span><span class="acronym-val">Payment Card Industry Data Security Standards</span></div>
+          <div class="acronym-item"><span class="acronym-key">PDU</span><span class="acronym-val">Power Distribution Unit</span></div>
+          <div class="acronym-item"><span class="acronym-key">PKI</span><span class="acronym-val">Public Key Infrastructure</span></div>
+          <div class="acronym-item"><span class="acronym-key">PoE</span><span class="acronym-val">Power over Ethernet</span></div>
+          <div class="acronym-item"><span class="acronym-key">PSK</span><span class="acronym-val">Pre-Shared Key</span></div>
+          <div class="acronym-item"><span class="acronym-key">PTP</span><span class="acronym-val">Precision Time Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">PTR</span><span class="acronym-val">Pointer (DNS reverse lookup)</span></div>
+          <div class="acronym-item"><span class="acronym-key">QoS</span><span class="acronym-val">Quality of Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">QSFP</span><span class="acronym-val">Quad Small Form-Factor Pluggable</span></div>
+          <div class="acronym-item"><span class="acronym-key">RADIUS</span><span class="acronym-val">Remote Authentication Dial-In User Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">RBAC</span><span class="acronym-val">Role-Based Access Control</span></div>
+          <div class="acronym-item"><span class="acronym-key">RDP</span><span class="acronym-val">Remote Desktop Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">RIP</span><span class="acronym-val">Routing Information Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">RPO</span><span class="acronym-val">Recovery Point Objective</span></div>
+          <div class="acronym-item"><span class="acronym-key">RSTP</span><span class="acronym-val">Rapid Spanning Tree Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">RTO</span><span class="acronym-val">Recovery Time Objective</span></div>
+          <div class="acronym-item"><span class="acronym-key">SaaS</span><span class="acronym-val">Software as a Service</span></div>
+          <div class="acronym-item"><span class="acronym-key">SAML</span><span class="acronym-val">Security Assertion Markup Language</span></div>
+          <div class="acronym-item"><span class="acronym-key">SAN</span><span class="acronym-val">Storage Area Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">SASE</span><span class="acronym-val">Secure Access Service Edge</span></div>
+          <div class="acronym-item"><span class="acronym-key">SC</span><span class="acronym-val">Subscriber Connector (fiber)</span></div>
+          <div class="acronym-item"><span class="acronym-key">SCADA</span><span class="acronym-val">Supervisory Control and Data Acquisition</span></div>
+          <div class="acronym-item"><span class="acronym-key">SDN</span><span class="acronym-val">Software-Defined Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">SD-WAN</span><span class="acronym-val">Software-Defined WAN</span></div>
+          <div class="acronym-item"><span class="acronym-key">SFP</span><span class="acronym-val">Small Form-Factor Pluggable</span></div>
+          <div class="acronym-item"><span class="acronym-key">SFTP</span><span class="acronym-val">Secure File Transfer Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">SIEM</span><span class="acronym-val">Security Info and Event Management</span></div>
+          <div class="acronym-item"><span class="acronym-key">SIP</span><span class="acronym-val">Session Initiation Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">SLA</span><span class="acronym-val">Service-Level Agreement</span></div>
+          <div class="acronym-item"><span class="acronym-key">SLAAC</span><span class="acronym-val">Stateless Address Autoconfiguration</span></div>
+          <div class="acronym-item"><span class="acronym-key">SMB</span><span class="acronym-val">Server Message Block</span></div>
+          <div class="acronym-item"><span class="acronym-key">SMTP</span><span class="acronym-val">Simple Mail Transfer Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">SNMP</span><span class="acronym-val">Simple Network Management Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">SOA</span><span class="acronym-val">Start of Authority (DNS)</span></div>
+          <div class="acronym-item"><span class="acronym-key">SSH</span><span class="acronym-val">Secure Shell</span></div>
+          <div class="acronym-item"><span class="acronym-key">SSID</span><span class="acronym-val">Service Set Identifier</span></div>
+          <div class="acronym-item"><span class="acronym-key">SSO</span><span class="acronym-val">Single Sign-On</span></div>
+          <div class="acronym-item"><span class="acronym-key">SSE</span><span class="acronym-val">Security Service Edge</span></div>
+          <div class="acronym-item"><span class="acronym-key">ST</span><span class="acronym-val">Straight Tip (fiber connector)</span></div>
+          <div class="acronym-item"><span class="acronym-key">STP</span><span class="acronym-val">Spanning Tree Protocol / Shielded Twisted Pair</span></div>
+          <div class="acronym-item"><span class="acronym-key">SVI</span><span class="acronym-val">Switch Virtual Interface</span></div>
+          <div class="acronym-item"><span class="acronym-key">TACACS+</span><span class="acronym-val">Terminal Access Controller Access Control System+</span></div>
+          <div class="acronym-item"><span class="acronym-key">TCP</span><span class="acronym-val">Transmission Control Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">TFTP</span><span class="acronym-val">Trivial File Transfer Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">TLS</span><span class="acronym-val">Transport Layer Security</span></div>
+          <div class="acronym-item"><span class="acronym-key">TOTP</span><span class="acronym-val">Time-Based One-Time Password</span></div>
+          <div class="acronym-item"><span class="acronym-key">TTL</span><span class="acronym-val">Time to Live</span></div>
+          <div class="acronym-item"><span class="acronym-key">UDP</span><span class="acronym-val">User Datagram Protocol</span></div>
+          <div class="acronym-item"><span class="acronym-key">UPS</span><span class="acronym-val">Uninterruptible Power Supply</span></div>
+          <div class="acronym-item"><span class="acronym-key">URL</span><span class="acronym-val">Uniform Resource Locator</span></div>
+          <div class="acronym-item"><span class="acronym-key">UTM</span><span class="acronym-val">Unified Threat Management</span></div>
+          <div class="acronym-item"><span class="acronym-key">UTP</span><span class="acronym-val">Unshielded Twisted Pair</span></div>
+          <div class="acronym-item"><span class="acronym-key">VIP</span><span class="acronym-val">Virtual IP</span></div>
+          <div class="acronym-item"><span class="acronym-key">VLAN</span><span class="acronym-val">Virtual Local Area Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">VLSM</span><span class="acronym-val">Variable Length Subnet Mask</span></div>
+          <div class="acronym-item"><span class="acronym-key">VoIP</span><span class="acronym-val">Voice over IP</span></div>
+          <div class="acronym-item"><span class="acronym-key">VPC</span><span class="acronym-val">Virtual Private Cloud</span></div>
+          <div class="acronym-item"><span class="acronym-key">VPN</span><span class="acronym-val">Virtual Private Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">VXLAN</span><span class="acronym-val">Virtual Extensible LAN</span></div>
+          <div class="acronym-item"><span class="acronym-key">WAF</span><span class="acronym-val">Web Application Firewall</span></div>
+          <div class="acronym-item"><span class="acronym-key">WAN</span><span class="acronym-val">Wide Area Network</span></div>
+          <div class="acronym-item"><span class="acronym-key">WPA</span><span class="acronym-val">Wi-Fi Protected Access</span></div>
+          <div class="acronym-item"><span class="acronym-key">WPS</span><span class="acronym-val">Wi-Fi Protected Setup (avoid!)</span></div>
+          <div class="acronym-item"><span class="acronym-key">ZTA</span><span class="acronym-val">Zero Trust Architecture</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================
+       PORT QUICK REF
+  ============================= -->
+  <div class="section" id="ports">
+    <div class="domain-header" style="border-bottom-color:var(--border)">
+      <span class="domain-num" style="background:rgba(124,58,237,0.1);color:var(--accent2);border-color:rgba(124,58,237,0.3)">REF</span>
+      <h2 class="domain-title">Port Number Quick Reference</h2>
+    </div>
+    <div class="subsection">
+      <div class="subsection-body">
+        <div class="port-quick">
+          <div class="port-item"><span class="port-num">20</span><span class="port-name">FTP data</span></div>
+          <div class="port-item"><span class="port-num">21</span><span class="port-name">FTP control</span></div>
+          <div class="port-item"><span class="port-num">22</span><span class="port-name">SSH & SFTP</span></div>
+          <div class="port-item"><span class="port-num">23</span><span class="port-name">Telnet (insecure!)</span></div>
+          <div class="port-item"><span class="port-num">25</span><span class="port-name">SMTP</span></div>
+          <div class="port-item"><span class="port-num">53</span><span class="port-name">DNS</span></div>
+          <div class="port-item"><span class="port-num">67</span><span class="port-name">DHCP server</span></div>
+          <div class="port-item"><span class="port-num">68</span><span class="port-name">DHCP client</span></div>
+          <div class="port-item"><span class="port-num">69</span><span class="port-name">TFTP</span></div>
+          <div class="port-item"><span class="port-num">80</span><span class="port-name">HTTP</span></div>
+          <div class="port-item"><span class="port-num">123</span><span class="port-name">NTP</span></div>
+          <div class="port-item"><span class="port-num">161</span><span class="port-name">SNMP agent</span></div>
+          <div class="port-item"><span class="port-num">162</span><span class="port-name">SNMP traps</span></div>
+          <div class="port-item"><span class="port-num">389</span><span class="port-name">LDAP</span></div>
+          <div class="port-item"><span class="port-num">443</span><span class="port-name">HTTPS</span></div>
+          <div class="port-item"><span class="port-num">445</span><span class="port-name">SMB</span></div>
+          <div class="port-item"><span class="port-num">514</span><span class="port-name">Syslog</span></div>
+          <div class="port-item"><span class="port-num">587</span><span class="port-name">SMTPS</span></div>
+          <div class="port-item"><span class="port-num">636</span><span class="port-name">LDAPS</span></div>
+          <div class="port-item"><span class="port-num">853</span><span class="port-name">DoT</span></div>
+          <div class="port-item"><span class="port-num">1433</span><span class="port-name">SQL Server</span></div>
+          <div class="port-item"><span class="port-num">3389</span><span class="port-name">RDP</span></div>
+          <div class="port-item"><span class="port-num">5060</span><span class="port-name">SIP</span></div>
+          <div class="port-item"><span class="port-num">5061</span><span class="port-name">SIP/TLS</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    CompTIA Network+ N10-009 Study Guide &nbsp;·&nbsp; Good luck on your exam!<br>
+    Focus on understanding concepts — not memorization alone. Practice labs, subnet calculations, and know your acronyms.
+  </footer>
+
+</div>
+
+<a href="#top" class="scroll-top">↑</a>
+
 </body>
 </html>
